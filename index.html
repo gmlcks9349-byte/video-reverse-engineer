@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIDEO RE — Visual DNA Extractor</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #2a2a2a;
+    --border-bright: #3a3a3a;
+    --lime: #c8ff00;
+    --orange: #ff6b00;
+    --red: #ff3333;
+    --white: #f0f0f0;
+    --gray: #666666;
+    --gray2: #444444;
+    --text: #e0e0e0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-badge {
+    background: var(--lime);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 7px;
+    letter-spacing: 2px;
+  }
+
+  .header-suite {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .settings-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .settings-btn:hover {
+    border-color: var(--lime);
+    color: var(--lime);
+  }
+
+  /* API MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    width: 500px;
+    padding: 0;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--gray);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .modal-close:hover { color: var(--white); }
+
+  .modal-body { padding: 28px; }
+
+  .api-field {
+    margin-bottom: 20px;
+  }
+
+  .api-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--lime);
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  .api-sublabel {
+    font-size: 10px;
+    color: var(--gray);
+    margin-bottom: 10px;
+    display: block;
+    letter-spacing: 1px;
+  }
+
+  .api-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .api-input:focus { border-color: var(--lime); }
+  .api-input::placeholder { color: var(--gray2); }
+
+  .modal-save {
+    width: 100%;
+    background: var(--lime);
+    border: none;
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    padding: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+
+  .modal-save:hover { opacity: 0.85; }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gray);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gray2);
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  .status-dot.active { background: var(--lime); box-shadow: 0 0 6px var(--lime); }
+  .status-dot.warn { background: var(--orange); }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  /* SECTION TITLE */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--lime);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 3px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .section-desc {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  /* UPLOAD ZONE */
+  .upload-section {
+    margin-top: 48px;
+  }
+
+  .upload-zone {
+    border: 2px dashed var(--border-bright);
+    background: var(--surface);
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--lime);
+    background: rgba(200,255,0,0.03);
+  }
+
+  .upload-zone.has-file {
+    border-color: var(--orange);
+    border-style: solid;
+  }
+
+  .upload-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    opacity: 0.5;
+  }
+
+  .upload-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 4px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .upload-sub {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 2px;
+  }
+
+  .upload-limit {
+    font-size: 10px;
+    color: var(--orange);
+    letter-spacing: 2px;
+    margin-top: 6px;
+  }
+
+  .file-selected {
+    display: none;
+  }
+
+  .file-selected.show {
+    display: block;
+  }
+
+  .file-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+
+  .file-meta {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 2px;
+  }
+
+  #fileInput { display: none; }
+
+  /* CONFIG PANEL */
+  .config-panel {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .config-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+  }
+
+  .config-card-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--lime);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .config-select, .config-textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .config-select:focus, .config-textarea:focus {
+    border-color: var(--lime);
+  }
+
+  .config-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+  }
+
+  .config-textarea::placeholder { color: var(--gray2); font-size: 10px; }
+
+  /* TARGET MODEL TOGGLE */
+  .model-toggle {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .model-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--gray);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .model-btn:hover { border-color: var(--border-bright); color: var(--text); }
+  .model-btn.active { background: var(--lime); border-color: var(--lime); color: #000; font-weight: 700; }
+
+  /* ANALYZE BUTTON */
+  .analyze-btn {
+    width: 100%;
+    background: var(--lime);
+    border: none;
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 6px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .analyze-btn::before {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.15);
+    transition: left 0.3s;
+  }
+
+  .analyze-btn:hover::before { left: 100%; }
+  .analyze-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .analyze-btn:disabled { background: var(--gray2); color: var(--gray); cursor: not-allowed; transform: none; }
+
+  /* PROGRESS */
+  .progress-section {
+    display: none;
+    margin-top: 32px;
+  }
+
+  .progress-section.show { display: block; }
+
+  .progress-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    height: 4px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--lime);
+    width: 0%;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px var(--lime);
+  }
+
+  .progress-log {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    line-height: 2;
+    max-height: 140px;
+    overflow-y: auto;
+  }
+
+  .log-line { display: flex; align-items: center; gap: 8px; }
+  .log-line .log-icon { color: var(--lime); }
+  .log-line.processing .log-icon { color: var(--orange); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* RESULTS */
+  .results-section {
+    display: none;
+    margin-top: 48px;
+  }
+
+  .results-section.show { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .results-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .action-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .action-btn:hover { border-color: var(--lime); color: var(--lime); }
+  .action-btn.primary { background: var(--orange); border-color: var(--orange); color: #000; font-weight: 700; }
+  .action-btn.primary:hover { opacity: 0.85; }
+
+  /* SHOT CARDS */
+  .shots-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .shot-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .shot-header {
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .shot-header:hover { background: #222; }
+
+  .shot-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--lime);
+  }
+
+  .shot-summary {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    flex: 1;
+    margin: 0 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .shot-toggle {
+    font-size: 18px;
+    color: var(--gray);
+    transition: transform 0.3s;
+  }
+
+  .shot-toggle.open { transform: rotate(180deg); }
+
+  .shot-body {
+    display: none;
+    padding: 20px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .shot-body.open { display: grid; }
+
+  .shot-field {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+  }
+
+  .shot-field.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .field-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .field-value {
+    font-size: 11px;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+  }
+
+  /* FINAL PROMPT BOX */
+  .prompt-box {
+    background: var(--bg);
+    border: 1px solid var(--lime);
+    padding: 16px;
+    margin-top: 12px;
+    grid-column: 1 / -1;
+    position: relative;
+  }
+
+  .prompt-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--lime);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .copy-shot-btn {
+    background: none;
+    border: 1px solid var(--lime);
+    color: var(--lime);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-shot-btn:hover { background: var(--lime); color: #000; }
+
+  .prompt-text {
+    font-size: 11px;
+    color: var(--lime);
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* JSON OUTPUT */
+  .json-section {
+    margin-top: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .json-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .json-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--orange);
+    text-transform: uppercase;
+  }
+
+  .json-body {
+    padding: 20px;
+    background: var(--bg);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #7ec8e3;
+    line-height: 1.8;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gray); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--gray2);
+    letter-spacing: 2px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--lime);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 12px 20px;
+    z-index: 9998;
+    transform: translateY(80px);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.show { transform: translateY(0); }
+
+  /* ERROR STATE */
+  .error-box {
+    display: none;
+    background: rgba(255,51,51,0.08);
+    border: 1px solid var(--red);
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 1px;
+    line-height: 1.7;
+  }
+
+  .error-box.show { display: block; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    header { padding: 0 20px; }
+    .main { padding: 32px 20px; }
+    .config-panel { grid-template-columns: 1fr; }
+    .shot-body { grid-template-columns: 1fr; }
+    .shot-field.full-width { grid-column: 1; }
+    .status-bar { padding: 10px 20px; gap: 12px; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    VIDEO RE
+    <span class="logo-badge">V.01</span>
+  </div>
+  <div class="header-suite">AI CONTENT STUDIO</div>
+  <button class="settings-btn" onclick="openModal()">⚙ API KEYS</button>
+</header>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div>
+    <span class="status-dot" id="geminiDot"></span>
+    GEMINI API
+  </div>
+  <div>
+    <span class="status-dot" id="claudeDot"></span>
+    CLAUDE API
+  </div>
+  <div id="modelStatus" style="color: var(--gray2);">— TARGET: KLING 3.0</div>
+</div>
+
+<!-- API MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">API CONFIGURATION</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="api-field">
+        <label class="api-label">GEMINI API KEY</label>
+        <span class="api-sublabel">aistudio.google.com → Get API Key</span>
+        <input type="password" class="api-input" id="geminiKeyInput" placeholder="AIza...">
+      </div>
+      <div class="api-field">
+        <label class="api-label">CLAUDE API KEY</label>
+        <span class="api-sublabel">console.anthropic.com → API Keys</span>
+        <input type="password" class="api-input" id="claudeKeyInput" placeholder="sk-ant-...">
+      </div>
+      <button class="modal-save" onclick="saveKeys()">SAVE & CONNECT</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div>
+    <div class="section-label">// VISUAL DNA EXTRACTOR</div>
+    <div class="section-title">REVERSE<br>ENGINEER</div>
+    <div class="section-desc">
+      레퍼런스 영상을 업로드하면 Shot-by-Shot 물리 설계도를 자동으로 추출합니다.<br>
+      Nano Banana Pro 프레임워크 + Kling 3.0 최적화 프롬프트로 변환.
+    </div>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="upload-section">
+    <div class="section-label">// 01 — VIDEO INPUT</div>
+
+    <div class="upload-zone" id="uploadZone"
+      onclick="document.getElementById('fileInput').click()"
+      ondragover="handleDragOver(event)"
+      ondragleave="handleDragLeave(event)"
+      ondrop="handleDrop(event)">
+
+      <div id="uploadDefault">
+        <span class="upload-icon">▶</span>
+        <div class="upload-title">DROP VIDEO OR CLICK</div>
+        <div class="upload-sub">MP4 / MOV / WEBM / AVI</div>
+        <div class="upload-limit">MAX 50MB — GEMINI FILE UPLOAD API</div>
+      </div>
+
+      <div class="file-selected" id="fileSelected">
+        <span class="upload-icon">✓</span>
+        <div class="file-name" id="fileName">—</div>
+        <div class="file-meta" id="fileMeta">—</div>
+      </div>
+    </div>
+    <input type="file" id="fileInput" accept="video/*" onchange="handleFileSelect(event)">
+  </div>
+
+  <!-- CONFIG -->
+  <div class="config-panel">
+    <div class="config-card">
+      <div class="config-card-title">// TARGET MODEL</div>
+      <div class="model-toggle">
+        <button class="model-btn active" data-model="kling3" onclick="setModel(this)">KLING 3.0</button>
+        <button class="model-btn" data-model="kling25" onclick="setModel(this)">KLING 2.5</button>
+        <button class="model-btn" data-model="higgsfield" onclick="setModel(this)">HIGGSFIELD</button>
+        <button class="model-btn" data-model="minimax" onclick="setModel(this)">MINIMAX 2.3</button>
+      </div>
+    </div>
+    <div class="config-card">
+      <div class="config-card-title">// SHOT COUNT</div>
+      <select class="config-select" id="shotCount">
+        <option value="auto">AUTO DETECT (NO LIMIT)</option>
+        <option value="4">4 CUTS</option>
+        <option value="6" selected>6 CUTS (AARON FORMAT)</option>
+        <option value="8">8 CUTS</option>
+        <option value="10">10 CUTS</option>
+        <option value="12">12 CUTS</option>
+        <option value="16">16 CUTS</option>
+        <option value="20">20 CUTS</option>
+        <option value="24">24 CUTS</option>
+        <option value="30">30 CUTS</option>
+      </select>
+    </div>
+    <div class="config-card" style="grid-column: 1 / -1;">
+      <div class="config-card-title">// CHARACTER REFERENCE (OPTIONAL)</div>
+      <textarea class="config-textarea" id="charRef" placeholder="캐릭터 고정값 입력 (예: Aaron — platinum blonde buzzcut, oversized streetwear, Balenciaga aesthetic)&#10;비워두면 영상 속 인물을 그대로 묘사합니다."></textarea>
+    </div>
+  </div>
+
+  <!-- ANALYZE BUTTON -->
+  <button class="analyze-btn" id="analyzeBtn" onclick="startAnalysis()">
+    ⬡ EXTRACT VISUAL DNA
+  </button>
+
+  <!-- ERROR -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section" id="progressSection">
+    <div class="section-label">// PROCESSING</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-log" id="progressLog"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="resultsSection">
+    <div class="results-header">
+      <div>
+        <div class="section-label">// EXTRACTED SHOTS</div>
+        <div class="section-title" style="font-size:32px;" id="resultsTitle">— SHOTS</div>
+      </div>
+      <div class="results-actions">
+        <button class="action-btn" onclick="copyAllPrompts()">COPY ALL PROMPTS</button>
+        <button class="action-btn primary" onclick="copyJSON()">COPY JSON</button>
+      </div>
+    </div>
+
+    <div class="shots-grid" id="shotsGrid"></div>
+
+    <!-- JSON OUTPUT -->
+    <div class="json-section" style="margin-top: 24px;">
+      <div class="json-header">
+        <div class="json-title">STORYBOARD GEN COMPATIBLE JSON</div>
+        <button class="action-btn" onclick="copyJSON()" style="padding: 8px 14px;">COPY</button>
+      </div>
+      <div class="json-body" id="jsonOutput"></div>
+    </div>
+  </div>
+
+</main>
+
+<hr class="divider" style="margin: 0;">
+
+<footer>
+  <div>VIDEO RE — VISUAL DNA EXTRACTOR</div>
+  <div>AI CONTENT STUDIO © HEECHAN</div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+let selectedFile = null;
+let targetModel = 'kling3';
+let analysisResult = null;
+
+const MODEL_LABELS = {
+  kling3: 'KLING 3.0',
+  kling25: 'KLING 2.5',
+  higgsfield: 'HIGGSFIELD SOUL 2.0',
+  minimax: 'MINIMAX 2.3'
+};
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadKeys();
+  updateStatusDots();
+});
+
+// ─────────────────────────────────────────
+// API KEY MANAGEMENT
+// ─────────────────────────────────────────
+function loadKeys() {
+  const gk = localStorage.getItem('VIDEO_RE_GEMINI');
+  const ck = localStorage.getItem('VIDEO_RE_CLAUDE');
+  if (gk) document.getElementById('geminiKeyInput').value = gk;
+  if (ck) document.getElementById('claudeKeyInput').value = ck;
+  updateStatusDots();
+  if (!gk || !ck) openModal();
+}
+
+function saveKeys() {
+  const gk = document.getElementById('geminiKeyInput').value.trim();
+  const ck = document.getElementById('claudeKeyInput').value.trim();
+  if (!gk || !ck) { showToast('BOTH KEYS REQUIRED'); return; }
+  localStorage.setItem('VIDEO_RE_GEMINI', gk);
+  localStorage.setItem('VIDEO_RE_CLAUDE', ck);
+  updateStatusDots();
+  closeModal();
+  showToast('KEYS SAVED ✓');
+}
+
+function updateStatusDots() {
+  const gk = localStorage.getItem('VIDEO_RE_GEMINI');
+  const ck = localStorage.getItem('VIDEO_RE_CLAUDE');
+  document.getElementById('geminiDot').className = 'status-dot' + (gk ? ' active' : ' warn');
+  document.getElementById('claudeDot').className = 'status-dot' + (ck ? ' active' : ' warn');
+}
+
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  const gk = localStorage.getItem('VIDEO_RE_GEMINI');
+  const ck = localStorage.getItem('VIDEO_RE_CLAUDE');
+  if (!gk || !ck) { showToast('API KEYS REQUIRED TO USE'); }
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// ─────────────────────────────────────────
+// FILE HANDLING
+// ─────────────────────────────────────────
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) setFile(file);
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.add('dragover');
+}
+
+function handleDragLeave(e) {
+  document.getElementById('uploadZone').classList.remove('dragover');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) setFile(file);
+  else showToast('VIDEO FILES ONLY');
+}
+
+function setFile(file) {
+  if (file.size > 52428800) {
+    showError('FILE TOO LARGE. MAX 50MB FOR GEMINI API.\n영상을 트리밍하거나 압축 후 다시 시도해주세요.');
+    return;
+  }
+  selectedFile = file;
+  const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+  document.getElementById('uploadDefault').style.display = 'none';
+  document.getElementById('fileSelected').classList.add('show');
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileMeta').textContent = `${sizeMB}MB — ${file.type.toUpperCase()}`;
+  document.getElementById('uploadZone').classList.add('has-file');
+  hideError();
+}
+
+// ─────────────────────────────────────────
+// MODEL SELECTION
+// ─────────────────────────────────────────
+function setModel(btn) {
+  document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  targetModel = btn.dataset.model;
+  document.getElementById('modelStatus').textContent = `— TARGET: ${MODEL_LABELS[targetModel]}`;
+}
+
+// ─────────────────────────────────────────
+// MAIN ANALYSIS
+// ─────────────────────────────────────────
+async function startAnalysis() {
+  const geminiKey = localStorage.getItem('VIDEO_RE_GEMINI');
+  const claudeKey = localStorage.getItem('VIDEO_RE_CLAUDE');
+
+  if (!geminiKey || !claudeKey) { openModal(); return; }
+  if (!selectedFile) { showToast('VIDEO FILE REQUIRED'); return; }
+
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  btn.textContent = 'PROCESSING...';
+  hideError();
+
+  showProgress();
+  addLog('▶ INITIATING VISUAL DNA EXTRACTION...', 'processing');
+  setProgress(5);
+
+  try {
+    // STEP 1: Upload to Gemini Files API
+    addLog('▶ UPLOADING VIDEO TO GEMINI FILES API...', 'processing');
+    setProgress(15);
+    const fileUri = await uploadToGemini(selectedFile, geminiKey);
+    addLog('✓ VIDEO UPLOADED SUCCESSFULLY', 'done');
+    setProgress(35);
+
+    // STEP 2: Gemini Vision Analysis
+    addLog('▶ GEMINI 3.1 PRO — ANALYZING SHOT STRUCTURE...', 'processing');
+    const shotCount = document.getElementById('shotCount').value;
+    const charRef = document.getElementById('charRef').value.trim();
+    const rawData = await analyzeWithGemini(fileUri, shotCount, charRef, geminiKey);
+    addLog('✓ SHOT ANALYSIS COMPLETE', 'done');
+    setProgress(65);
+
+    // STEP 3: Claude Directive Mapping
+    addLog('▶ CLAUDE — MAPPING TO NANO BANANA PRO FRAMEWORK...', 'processing');
+    const finalData = await mapWithClaude(rawData, charRef, claudeKey);
+    addLog('✓ DIRECTIVE MAPPING COMPLETE', 'done');
+    setProgress(90);
+
+    // STEP 4: Render results
+    addLog('▶ RENDERING OUTPUT...', 'processing');
+    analysisResult = finalData;
+    renderResults(finalData);
+    setProgress(100);
+    addLog('✓ VISUAL DNA EXTRACTION COMPLETE', 'done');
+
+    showToast('EXTRACTION COMPLETE ✓');
+
+  } catch (err) {
+    showError('ERROR: ' + err.message);
+    addLog('✕ ERROR: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⬡ EXTRACT VISUAL DNA';
+  }
+}
+
+// ─────────────────────────────────────────
+// GEMINI FILE UPLOAD
+// ─────────────────────────────────────────
+async function uploadToGemini(file, apiKey) {
+  const mimeType = file.type || 'video/mp4';
+  const numBytes = file.size;
+  const displayName = file.name;
+
+  // Initiate resumable upload
+  const initRes = await fetch(
+    `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: {
+        'X-Goog-Upload-Protocol': 'resumable',
+        'X-Goog-Upload-Command': 'start',
+        'X-Goog-Upload-Header-Content-Length': numBytes,
+        'X-Goog-Upload-Header-Content-Type': mimeType,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ file: { display_name: displayName } })
+    }
+  );
+
+  if (!initRes.ok) {
+    const err = await initRes.json();
+    throw new Error(`File upload init failed: ${err.error?.message || initRes.status}`);
+  }
+
+  const uploadUrl = initRes.headers.get('X-Goog-Upload-URL');
+  if (!uploadUrl) throw new Error('Upload URL not received from Gemini');
+
+  // Upload file bytes
+  const uploadRes = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Length': numBytes,
+      'X-Goog-Upload-Offset': 0,
+      'X-Goog-Upload-Command': 'upload, finalize',
+      'Content-Type': mimeType
+    },
+    body: file
+  });
+
+  if (!uploadRes.ok) {
+    const err = await uploadRes.text();
+    throw new Error(`File upload failed: ${err}`);
+  }
+
+  const uploadData = await uploadRes.json();
+  const fileUri = uploadData?.file?.uri;
+  if (!fileUri) throw new Error('File URI not returned from Gemini');
+
+  // Wait for file to be ACTIVE
+  await waitForFileActive(fileUri, apiKey);
+  return fileUri;
+}
+
+async function waitForFileActive(fileUri, apiKey) {
+  const fileId = fileUri.split('/').pop();
+  for (let i = 0; i < 20; i++) {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/files/${fileId}?key=${apiKey}`
+    );
+    const data = await res.json();
+    if (data?.file?.state === 'ACTIVE') return;
+    if (data?.file?.state === 'FAILED') throw new Error('Gemini file processing failed');
+    await sleep(3000);
+  }
+  throw new Error('File processing timeout');
+}
+
+// ─────────────────────────────────────────
+// GEMINI ANALYSIS
+// ─────────────────────────────────────────
+async function analyzeWithGemini(fileUri, shotCount, charRef, apiKey) {
+  const shotInstruction = shotCount === 'auto'
+    ? 'Detect and analyze ALL distinct shots/cuts in this video.'
+    : `Analyze exactly ${shotCount} main shots from this video. If there are more cuts, merge minor movements into the ${shotCount} most distinct shots.`;
+
+  const charInstruction = charRef
+    ? `Character reference: ${charRef}`
+    : 'Describe the subject in each shot as you observe them.';
+
+  const prompt = `You are a professional cinematographer and film analyst. Analyze this video and extract the physical, technical blueprint of each shot.
+
+${shotInstruction}
+${charInstruction}
+
+For EACH shot, extract:
+1. SUBJECT: Who/what is the main subject, appearance, clothing
+2. COMPOSITION: Shot type (ECU/CU/MCU/MS/MLS/LS/ELS), framing, rule of thirds, depth
+3. CAMERA_MOVEMENT: Exact movement type (static/pan/tilt/dolly-in/dolly-out/crane/tracking/handheld/zoom/orbital) and speed (slow/medium/fast)
+4. LIGHTING: Light source, direction, quality (hard/soft), color temperature, mood
+5. ACTION: What the subject is doing, body language, expression
+6. LOCATION: Setting, environment, time of day, background elements
+7. DURATION_ESTIMATE: Approximate shot duration in seconds
+8. TRANSITION: How this shot connects to the next (cut/dissolve/fade/smash-cut)
+
+Return ONLY a valid JSON array, no markdown, no explanation:
+[
+  {
+    "shot_number": 1,
+    "subject": "...",
+    "composition": "...",
+    "camera_movement": "...",
+    "lighting": "...",
+    "action": "...",
+    "location": "...",
+    "duration_estimate": "...",
+    "transition_out": "..."
+  }
+]`;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { file_data: { mime_type: selectedFile.type || 'video/mp4', file_uri: fileUri } },
+            { text: prompt }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 4096
+        }
+      })
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(`Gemini analysis failed: ${err.error?.message || res.status}`);
+  }
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('No response from Gemini');
+
+  // Parse JSON from response
+  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    // Try to extract JSON array from text
+    const match = cleaned.match(/\[[\s\S]*\]/);
+    if (match) return JSON.parse(match[0]);
+    throw new Error('Failed to parse Gemini response as JSON');
+  }
+}
+
+// ─────────────────────────────────────────
+// CLAUDE DIRECTIVE MAPPING
+// ─────────────────────────────────────────
+async function mapWithClaude(rawShots, charRef, apiKey) {
+  const modelMap = {
+    kling3: 'Kling 3.0',
+    kling25: 'Kling 2.5',
+    higgsfield: 'Higgsfield Soul 2.0',
+    minimax: 'MiniMax 2.3'
+  };
+  const targetModelName = modelMap[targetModel];
+
+  const prompt = `You are an expert AI video prompt engineer for ${targetModelName}. 
+You follow the Nano Banana Pro framework: [Subject / Composition / Action / Location / Style].
+
+${charRef ? `Character reference: ${charRef}` : ''}
+
+Convert each shot's raw analysis into an optimized ${targetModelName} prompt.
+
+Rules:
+- Use cinematic directive language: "slow dolly-in", "locked to subject", "tracking shot"
+- For Kling: Use phrases like "[LOCKED TO: subject]", "shallow DOF", "cinematic push"
+- Keep prompts under 120 words but pack maximum physical information
+- End each prompt with a style tag: "— hyperrealistic cinematic" or "— editorial fashion film"
+- Preserve all physical camera data exactly
+
+Input shots (raw Gemini analysis):
+${JSON.stringify(rawShots, null, 2)}
+
+Return ONLY a valid JSON array with the same structure but add a "kling_prompt" field and "visual_dna" summary to each shot:
+[
+  {
+    ...original_fields,
+    "visual_dna": "one-line summary of this shot's essence",
+    "kling_prompt": "optimized ${targetModelName} prompt here"
+  }
+]`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(`Claude mapping failed: ${err.error?.message || res.status}`);
+  }
+
+  const data = await res.json();
+  const text = data?.content?.[0]?.text;
+  if (!text) throw new Error('No response from Claude');
+
+  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const match = cleaned.match(/\[[\s\S]*\]/);
+    if (match) return JSON.parse(match[0]);
+    throw new Error('Failed to parse Claude response as JSON');
+  }
+}
+
+// ─────────────────────────────────────────
+// RENDER RESULTS
+// ─────────────────────────────────────────
+function renderResults(shots) {
+  document.getElementById('resultsTitle').textContent = `${shots.length} SHOTS EXTRACTED`;
+  document.getElementById('resultsSection').classList.add('show');
+
+  const grid = document.getElementById('shotsGrid');
+  grid.innerHTML = '';
+
+  shots.forEach((shot, i) => {
+    const card = document.createElement('div');
+    card.className = 'shot-card';
+    card.style.animationDelay = `${i * 0.08}s`;
+
+    const promptFieldLabel = targetModel === 'higgsfield' ? 'HIGGSFIELD PROMPT'
+      : targetModel === 'minimax' ? 'MINIMAX PROMPT'
+      : `KLING ${targetModel === 'kling3' ? '3.0' : '2.5'} PROMPT`;
+
+    card.innerHTML = `
+      <div class="shot-header" onclick="toggleShot(this)">
+        <div class="shot-num">SHOT ${String(shot.shot_number || i+1).padStart(2,'0')}</div>
+        <div class="shot-summary">${shot.visual_dna || shot.action || '—'}</div>
+        <div class="shot-toggle">▾</div>
+      </div>
+      <div class="shot-body">
+        <div class="shot-field">
+          <span class="field-label">SUBJECT</span>
+          <div class="field-value">${shot.subject || '—'}</div>
+        </div>
+        <div class="shot-field">
+          <span class="field-label">COMPOSITION</span>
+          <div class="field-value">${shot.composition || '—'}</div>
+        </div>
+        <div class="shot-field">
+          <span class="field-label">CAMERA MOVEMENT</span>
+          <div class="field-value">${shot.camera_movement || '—'}</div>
+        </div>
+        <div class="shot-field">
+          <span class="field-label">LIGHTING</span>
+          <div class="field-value">${shot.lighting || '—'}</div>
+        </div>
+        <div class="shot-field">
+          <span class="field-label">ACTION</span>
+          <div class="field-value">${shot.action || '—'}</div>
+        </div>
+        <div class="shot-field">
+          <span class="field-label">LOCATION</span>
+          <div class="field-value">${shot.location || '—'}</div>
+        </div>
+        <div class="shot-field">
+          <span class="field-label">DURATION</span>
+          <div class="field-value">${shot.duration_estimate || '—'}</div>
+        </div>
+        <div class="shot-field">
+          <span class="field-label">TRANSITION OUT</span>
+          <div class="field-value">${shot.transition_out || '—'}</div>
+        </div>
+        <div class="prompt-box full-width">
+          <div class="prompt-label">
+            ${promptFieldLabel}
+            <button class="copy-shot-btn" onclick="copyShotPrompt(event, ${i})">COPY</button>
+          </div>
+          <div class="prompt-text" id="prompt-${i}">${shot.kling_prompt || '—'}</div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // JSON Output
+  document.getElementById('jsonOutput').textContent = JSON.stringify(shots, null, 2);
+
+  // Scroll to results
+  setTimeout(() => {
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+}
+
+function toggleShot(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.shot-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+// ─────────────────────────────────────────
+// COPY FUNCTIONS
+// ─────────────────────────────────────────
+function copyShotPrompt(e, index) {
+  e.stopPropagation();
+  const text = document.getElementById(`prompt-${index}`).textContent;
+  copyToClipboard(text);
+  showToast('PROMPT COPIED ✓');
+}
+
+function copyAllPrompts() {
+  if (!analysisResult) return;
+  const all = analysisResult.map((s, i) =>
+    `// SHOT ${String(i+1).padStart(2,'0')}\n${s.kling_prompt}`
+  ).join('\n\n');
+  copyToClipboard(all);
+  showToast('ALL PROMPTS COPIED ✓');
+}
+
+function copyJSON() {
+  if (!analysisResult) return;
+  copyToClipboard(JSON.stringify(analysisResult, null, 2));
+  showToast('JSON COPIED ✓');
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+}
+
+// ─────────────────────────────────────────
+// PROGRESS
+// ─────────────────────────────────────────
+function showProgress() {
+  document.getElementById('progressSection').classList.add('show');
+  document.getElementById('progressLog').innerHTML = '';
+  setProgress(0);
+}
+
+function setProgress(pct) {
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function addLog(msg, type = 'done') {
+  const log = document.getElementById('progressLog');
+  const line = document.createElement('div');
+  line.className = `log-line ${type === 'processing' ? 'processing' : ''}`;
+  line.innerHTML = `<span class="log-icon">${type === 'error' ? '✕' : type === 'processing' ? '◎' : '✓'}</span>${msg}`;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ─────────────────────────────────────────
+// UI HELPERS
+// ─────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.classList.add('show');
+}
+
+function hideError() {
+  document.getElementById('errorBox').classList.remove('show');
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+</script>
+</body>
+</html>
