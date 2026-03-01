@@ -323,18 +323,38 @@
 
   .file-selected {
     display: none;
+    padding: 0;
   }
 
   .file-selected.show {
     display: block;
   }
 
+  .video-preview {
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    background: #000;
+    display: block;
+  }
+
+  .video-preview-meta {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
   .file-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 3px;
+    font-size: 16px;
+    letter-spacing: 2px;
     color: var(--orange);
-    margin-bottom: 6px;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0;
   }
 
   .file-meta {
@@ -393,7 +413,7 @@
 
   .config-textarea::placeholder { color: var(--gray2); font-size: 10px; }
 
-  /* TARGET MODEL TOGGLE */
+  /* MODEL TOGGLE (unused) */
   .model-toggle {
     display: flex;
     gap: 8px;
@@ -781,7 +801,7 @@
 <header>
   <div class="logo">
     VIDEO RE
-    <span class="logo-badge">V.01</span>
+    <span class="logo-badge">V.02</span>
   </div>
   <div class="header-suite">AI CONTENT STUDIO</div>
   <button class="settings-btn" onclick="openModal()">⚙ API KEYS</button>
@@ -797,7 +817,7 @@
     <span class="status-dot" id="claudeDot"></span>
     CLAUDE API
   </div>
-  <div id="modelStatus" style="color: var(--gray2);">— TARGET: KLING 3.0</div>
+  
 </div>
 
 <!-- API MODAL -->
@@ -829,7 +849,7 @@
   <!-- HERO -->
   <div>
     <div class="section-label">// VISUAL DNA EXTRACTOR</div>
-    <div class="section-title">REVERSE<br>ENGINEER</div>
+    <div class="section-title" style="white-space:nowrap;">REVERSE ENGINEER</div>
     <div class="section-desc">
       레퍼런스 영상을 업로드하면 Shot-by-Shot 물리 설계도를 자동으로 추출합니다.<br>
       Nano Banana Pro 프레임워크 + Kling 3.0 최적화 프롬프트로 변환.
@@ -854,9 +874,11 @@
       </div>
 
       <div class="file-selected" id="fileSelected">
-        <span class="upload-icon">✓</span>
-        <div class="file-name" id="fileName">—</div>
-        <div class="file-meta" id="fileMeta">—</div>
+        <video class="video-preview" id="videoPreview" controls muted playsinline></video>
+        <div class="video-preview-meta">
+          <div class="file-name" id="fileName">—</div>
+          <div class="file-meta" id="fileMeta">—</div>
+        </div>
       </div>
     </div>
     <input type="file" id="fileInput" accept="video/*" onchange="handleFileSelect(event)">
@@ -865,18 +887,11 @@
   <!-- CONFIG -->
   <div class="config-panel">
     <div class="config-card">
-      <div class="config-card-title">// TARGET MODEL</div>
-      <div class="model-toggle">
-        <button class="model-btn active" data-model="kling3">KLING 3.0</button>
-        
-      </div>
-    </div>
-    <div class="config-card">
       <div class="config-card-title">// SHOT COUNT</div>
       <select class="config-select" id="shotCount">
-        <option value="auto">AUTO DETECT (NO LIMIT)</option>
+        <option value="auto" selected>AUTO DETECT (NO LIMIT)</option>
         <option value="4">4 CUTS</option>
-        <option value="6" selected>6 CUTS (AARON FORMAT)</option>
+        <option value="6">6 CUTS</option>
         <option value="8">8 CUTS</option>
         <option value="10">10 CUTS</option>
         <option value="12">12 CUTS</option>
@@ -888,7 +903,7 @@
     </div>
     <div class="config-card" style="grid-column: 1 / -1;">
       <div class="config-card-title">// CHARACTER REFERENCE (OPTIONAL)</div>
-      <textarea class="config-textarea" id="charRef" placeholder="캐릭터 고정값 입력 (예: Aaron — platinum blonde buzzcut, oversized streetwear, Balenciaga aesthetic)&#10;비워두면 영상 속 인물을 그대로 묘사합니다."></textarea>
+      <textarea class="config-textarea" id="charRef" placeholder="(선택) 영상 속 인물을 다른 캐릭터로 교체할 경우 입력하세요.&#10;예: platinum blonde buzzcut male, oversized streetwear, Balenciaga aesthetic&#10;비워두면 영상 속 인물을 원본 그대로 묘사합니다."></textarea>
     </div>
   </div>
 
@@ -1046,11 +1061,16 @@ function setFile(file) {
   }
   selectedFile = file;
   const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+  // Set video preview
+  const videoEl = document.getElementById('videoPreview');
+  const prevUrl = URL.createObjectURL(file);
+  videoEl.src = prevUrl;
   document.getElementById('uploadDefault').style.display = 'none';
   document.getElementById('fileSelected').classList.add('show');
   document.getElementById('fileName').textContent = file.name;
-  document.getElementById('fileMeta').textContent = `${sizeMB}MB — ${file.type.toUpperCase()}`;
+  document.getElementById('fileMeta').textContent = `${sizeMB}MB`;
   document.getElementById('uploadZone').classList.add('has-file');
+  document.getElementById('uploadZone').style.padding = '0';
   hideError();
 }
 
@@ -1061,7 +1081,6 @@ function setModel(btn) {
   document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   targetModel = btn.dataset.model;
-  document.getElementById('modelStatus').textContent = `— TARGET: ${MODEL_LABELS[targetModel]}`;
 }
 
 // ─────────────────────────────────────────
@@ -1088,7 +1107,7 @@ async function startAnalysis() {
     addLog('▶ UPLOADING VIDEO TO GEMINI FILES API...', 'processing');
     setProgress(15);
     const fileUri = await uploadToGemini(selectedFile, geminiKey);
-    addLog('✓ VIDEO UPLOADED SUCCESSFULLY', 'done');
+    addLog(`✓ VIDEO UPLOADED — WAITING FOR GEMINI PROCESSING...`, 'done');
     setProgress(35);
 
     // STEP 2: Gemini Vision Analysis
@@ -1166,8 +1185,11 @@ async function waitForFileActive(fileUri, apiKey) {
       `https://generativelanguage.googleapis.com/v1beta/files/${fileId}?key=${apiKey}`
     );
     const data = await res.json();
-    if (data?.file?.state === 'ACTIVE') return;
-    if (data?.file?.state === 'FAILED') throw new Error('Gemini file processing failed');
+    // Gemini returns state at data.state (not data.file.state)
+    const state = data?.state || data?.file?.state;
+    addLog(`▶ FILE STATE: ${state || 'PROCESSING'} (${i+1}/40)`, 'processing');
+    if (state === 'ACTIVE') return;
+    if (state === 'FAILED') throw new Error('Gemini file processing failed');
     await sleep(5000);
   }
   throw new Error('File processing timeout');
