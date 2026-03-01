@@ -902,8 +902,8 @@
       </select>
     </div>
     <div class="config-card" style="grid-column: 1 / -1;">
-      <div class="config-card-title">// CHARACTER REFERENCE (OPTIONAL)</div>
-      <textarea class="config-textarea" id="charRef" placeholder="(선택) 영상 속 인물을 다른 캐릭터로 교체할 경우 입력하세요.&#10;예: platinum blonde buzzcut male, oversized streetwear, Balenciaga aesthetic&#10;비워두면 영상 속 인물을 원본 그대로 묘사합니다."></textarea>
+      <div class="config-card-title">// ANALYSIS INSTRUCTION (OPTIONAL)</div>
+      <textarea class="config-textarea" id="charRef" placeholder="(선택) 분석 방향을 자유롭게 지시하세요.&#10;예: 하단 workflow 파트는 무시하고 메인 영상만 분석해주세요.&#10;예: 카메라 무브먼트 위주로 분석해주세요.&#10;예: 주인공을 platinum blonde buzzcut male로 교체해서 묘사해주세요.&#10;비워두면 영상 전체를 기본 방식으로 분석합니다."></textarea>
     </div>
   </div>
 
@@ -1204,8 +1204,8 @@ async function analyzeWithGemini(fileUri, shotCount, charRef, apiKey) {
     : `Analyze exactly ${shotCount} main shots from this video. If there are more cuts, merge minor movements into the ${shotCount} most distinct shots.`;
 
   const charInstruction = charRef
-    ? `Character reference: ${charRef}`
-    : 'Describe the subject in each shot as you observe them.';
+    ? `Additional instruction from user: ${charRef}`
+    : '';
 
   const prompt = `You are a professional cinematographer and film analyst. Analyze this video and extract the physical, technical blueprint of each shot.
 
@@ -1266,16 +1266,29 @@ Return ONLY a valid JSON array, no markdown, no explanation:
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) throw new Error('No response from Gemini');
 
-  // Parse JSON from response
-  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    // Try to extract JSON array from text
-    const match = cleaned.match(/\[[\s\S]*\]/);
-    if (match) return JSON.parse(match[0]);
-    throw new Error('Failed to parse Gemini response as JSON');
-  }
+  // Parse JSON from response — multi-fallback
+  let cleaned = text
+    .replace(/```json\n?/gi, '')
+    .replace(/```\n?/g, '')
+    .trim();
+
+  // Log snippet for debug
+  addLog('▶ PARSING GEMINI RESPONSE...', 'processing');
+
+  // Fallback 1: direct parse
+  try { return JSON.parse(cleaned); } catch {}
+
+  // Fallback 2: extract JSON array [...] 
+  const arrMatch = cleaned.match(/\[[\s\S]*\]/);
+  if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch {} }
+
+  // Fallback 3: extract all objects and wrap in array
+  const objMatches = cleaned.match(/\{[\s\S]*?\}(?=\s*,?\s*\{|\s*$)/g);
+  if (objMatches) { try { return JSON.parse('[' + objMatches.join(',') + ']'); } catch {} }
+
+  // Debug: log raw text
+  addLog('✕ RAW PREVIEW: ' + text.substring(0, 200), 'error');
+  throw new Error('Failed to parse Gemini response as JSON');
 }
 
 // ─────────────────────────────────────────
@@ -1293,7 +1306,7 @@ async function mapWithClaude(rawShots, charRef, apiKey) {
   const prompt = `You are an expert AI video prompt engineer for ${targetModelName}. 
 You follow the Nano Banana Pro framework: [Subject / Composition / Action / Location / Style].
 
-${charRef ? `Character reference: ${charRef}` : ''}
+${charRef ? `Additional instruction: ${charRef}` : ''}
 
 Convert each shot's raw analysis into an optimized ${targetModelName} prompt.
 
