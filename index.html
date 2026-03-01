@@ -19,6 +19,7 @@
     --gray: #666666;
     --gray2: #444444;
     --text: #e0e0e0;
+    --plan-color: #3af5ff;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,7 +32,6 @@
     overflow-x: hidden;
   }
 
-  /* NOISE OVERLAY */
   body::before {
     content: '';
     position: fixed;
@@ -42,7 +42,6 @@
     opacity: 0.4;
   }
 
-  /* HEADER */
   header {
     border-bottom: 1px solid var(--border);
     padding: 0 40px;
@@ -77,12 +76,7 @@
     letter-spacing: 2px;
   }
 
-  .header-suite {
-    font-size: 10px;
-    color: var(--gray);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
+  .header-suite { font-size: 10px; color: var(--gray); letter-spacing: 3px; text-transform: uppercase; }
 
   .settings-btn {
     background: none;
@@ -96,13 +90,8 @@
     transition: all 0.2s;
     text-transform: uppercase;
   }
+  .settings-btn:hover { border-color: var(--lime); color: var(--lime); }
 
-  .settings-btn:hover {
-    border-color: var(--lime);
-    color: var(--lime);
-  }
-
-  /* API MODAL */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -112,14 +101,12 @@
     align-items: center;
     justify-content: center;
   }
-
   .modal-overlay.active { display: flex; }
 
   .modal {
     background: var(--surface);
     border: 1px solid var(--border-bright);
     width: 500px;
-    padding: 0;
     animation: slideUp 0.3s ease;
   }
 
@@ -136,46 +123,13 @@
     justify-content: space-between;
   }
 
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 3px;
-    color: var(--white);
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    color: var(--gray);
-    font-size: 20px;
-    cursor: pointer;
-    line-height: 1;
-  }
-
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; color: var(--white); }
+  .modal-close { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
   .modal-close:hover { color: var(--white); }
-
   .modal-body { padding: 28px; }
-
-  .api-field {
-    margin-bottom: 20px;
-  }
-
-  .api-label {
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--lime);
-    margin-bottom: 8px;
-    display: block;
-    text-transform: uppercase;
-  }
-
-  .api-sublabel {
-    font-size: 10px;
-    color: var(--gray);
-    margin-bottom: 10px;
-    display: block;
-    letter-spacing: 1px;
-  }
+  .api-field { margin-bottom: 20px; }
+  .api-label { font-size: 10px; letter-spacing: 3px; color: var(--lime); margin-bottom: 8px; display: block; text-transform: uppercase; }
+  .api-sublabel { font-size: 10px; color: var(--gray); margin-bottom: 10px; display: block; letter-spacing: 1px; }
 
   .api-input {
     width: 100%;
@@ -189,7 +143,6 @@
     transition: border-color 0.2s;
     letter-spacing: 1px;
   }
-
   .api-input:focus { border-color: var(--lime); }
   .api-input::placeholder { color: var(--gray2); }
 
@@ -206,10 +159,8 @@
     transition: opacity 0.2s;
     margin-top: 8px;
   }
-
   .modal-save:hover { opacity: 0.85; }
 
-  /* STATUS BAR */
   .status-bar {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -222,33 +173,13 @@
     color: var(--gray);
   }
 
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--gray2);
-    display: inline-block;
-    margin-right: 6px;
-  }
-
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gray2); display: inline-block; margin-right: 6px; }
   .status-dot.active { background: var(--lime); box-shadow: 0 0 6px var(--lime); }
   .status-dot.warn { background: var(--orange); }
 
-  /* MAIN LAYOUT */
-  .main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 48px 40px;
-  }
+  .main { max-width: 1200px; margin: 0 auto; padding: 48px 40px; }
 
-  /* SECTION TITLE */
-  .section-label {
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--lime);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
+  .section-label { font-size: 10px; letter-spacing: 4px; color: var(--lime); text-transform: uppercase; margin-bottom: 6px; }
 
   .section-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -259,18 +190,9 @@
     margin-bottom: 8px;
   }
 
-  .section-desc {
-    font-size: 11px;
-    color: var(--gray);
-    letter-spacing: 1px;
-    line-height: 1.7;
-    max-width: 600px;
-  }
+  .section-desc { font-size: 11px; color: var(--gray); letter-spacing: 1px; line-height: 1.7; max-width: 600px; }
 
-  /* UPLOAD ZONE */
-  .upload-section {
-    margin-top: 48px;
-  }
+  .upload-section { margin-top: 48px; }
 
   .upload-zone {
     border: 2px dashed var(--border-bright);
@@ -282,68 +204,20 @@
     position: relative;
     overflow: hidden;
   }
+  .upload-zone:hover, .upload-zone.dragover { border-color: var(--lime); background: rgba(200,255,0,0.03); }
+  .upload-zone.has-file { border-color: var(--orange); border-style: solid; }
 
-  .upload-zone:hover, .upload-zone.dragover {
-    border-color: var(--lime);
-    background: rgba(200,255,0,0.03);
-  }
+  .upload-icon { font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.5; }
+  .upload-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 4px; color: var(--white); margin-bottom: 8px; }
+  .upload-sub { font-size: 10px; color: var(--gray); letter-spacing: 2px; }
+  .upload-limit { font-size: 10px; color: var(--orange); letter-spacing: 2px; margin-top: 6px; }
 
-  .upload-zone.has-file {
-    border-color: var(--orange);
-    border-style: solid;
-  }
+  .file-selected { display: none; padding: 0; }
+  .file-selected.show { display: block; }
 
-  .upload-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    display: block;
-    opacity: 0.5;
-  }
+  .video-preview { width: 100%; max-height: 320px; object-fit: contain; background: #000; display: block; }
 
-  .upload-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px;
-    letter-spacing: 4px;
-    color: var(--white);
-    margin-bottom: 8px;
-  }
-
-  .upload-sub {
-    font-size: 10px;
-    color: var(--gray);
-    letter-spacing: 2px;
-  }
-
-  .upload-limit {
-    font-size: 10px;
-    color: var(--orange);
-    letter-spacing: 2px;
-    margin-top: 6px;
-  }
-
-  .file-selected {
-    display: none;
-    padding: 0;
-  }
-
-  .file-selected.show {
-    display: block;
-  }
-
-  .video-preview {
-    width: 100%;
-    max-height: 320px;
-    object-fit: contain;
-    background: #000;
-    display: block;
-  }
-
-  .video-preview-meta {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .video-preview-meta { padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
 
   .file-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -354,38 +228,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-bottom: 0;
   }
-
-  .file-meta {
-    font-size: 10px;
-    color: var(--gray);
-    letter-spacing: 2px;
-  }
-
+  .file-meta { font-size: 10px; color: var(--gray); letter-spacing: 2px; }
   #fileInput { display: none; }
 
-  /* CONFIG PANEL */
-  .config-panel {
-    margin-top: 32px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .config-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 20px 24px;
-  }
-
-  .config-card-title {
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--lime);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
+  .config-panel { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .config-card { background: var(--surface); border: 1px solid var(--border); padding: 20px 24px; }
+  .config-card-title { font-size: 10px; letter-spacing: 3px; color: var(--lime); text-transform: uppercase; margin-bottom: 14px; }
 
   .config-select, .config-textarea {
     width: 100%;
@@ -400,42 +249,10 @@
     appearance: none;
     cursor: pointer;
   }
-
-  .config-select:focus, .config-textarea:focus {
-    border-color: var(--lime);
-  }
-
-  .config-textarea {
-    resize: vertical;
-    min-height: 80px;
-    line-height: 1.6;
-  }
-
+  .config-select:focus, .config-textarea:focus { border-color: var(--lime); }
+  .config-textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
   .config-textarea::placeholder { color: var(--gray2); font-size: 10px; }
 
-  /* MODEL TOGGLE (unused) */
-  .model-toggle {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .model-btn {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--gray);
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 8px 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .model-btn:hover { border-color: var(--border-bright); color: var(--text); }
-  .model-btn.active { background: var(--lime); border-color: var(--lime); color: #000; font-weight: 700; }
-
-  /* ANALYZE BUTTON */
   .analyze-btn {
     width: 100%;
     background: var(--lime);
@@ -455,7 +272,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .analyze-btn::before {
     content: '';
     position: absolute;
@@ -466,34 +282,15 @@
     background: rgba(255,255,255,0.15);
     transition: left 0.3s;
   }
-
   .analyze-btn:hover::before { left: 100%; }
   .analyze-btn:hover { opacity: 0.9; transform: translateY(-1px); }
   .analyze-btn:disabled { background: var(--gray2); color: var(--gray); cursor: not-allowed; transform: none; }
 
-  /* PROGRESS */
-  .progress-section {
-    display: none;
-    margin-top: 32px;
-  }
-
+  .progress-section { display: none; margin-top: 32px; }
   .progress-section.show { display: block; }
 
-  .progress-bar-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    height: 4px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-
-  .progress-bar {
-    height: 100%;
-    background: var(--lime);
-    width: 0%;
-    transition: width 0.5s ease;
-    box-shadow: 0 0 8px var(--lime);
-  }
+  .progress-bar-wrap { background: var(--surface); border: 1px solid var(--border); height: 4px; margin-bottom: 16px; overflow: hidden; }
+  .progress-bar { height: 100%; background: var(--lime); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 8px var(--lime); }
 
   .progress-log {
     background: var(--surface);
@@ -510,30 +307,72 @@
   .log-line { display: flex; align-items: center; gap: 8px; }
   .log-line .log-icon { color: var(--lime); }
   .log-line.processing .log-icon { color: var(--orange); animation: pulse 1s infinite; }
-
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-  /* RESULTS */
-  .results-section {
-    display: none;
-    margin-top: 48px;
-  }
-
+  /* ─── RESULTS ─── */
+  .results-section { display: none; margin-top: 48px; }
   .results-section.show { display: block; }
 
+  /* ─── OUTPUT TABS ─── */
+  .output-tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .output-tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    background: transparent;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .output-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0; right: 0;
+    height: 2px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .output-tab.active { color: var(--white); }
+  .output-tab.active::after { background: var(--lime); }
+  .output-tab.plan-tab.active { color: var(--plan-color); }
+  .output-tab.plan-tab.active::after { background: var(--plan-color); }
+  .output-tab:hover:not(.active) { color: #aaa; }
+
+  .tab-badge {
+    display: inline-block;
+    background: var(--gray2);
+    color: var(--gray);
+    font-size: 8px;
+    padding: 2px 6px;
+    letter-spacing: 1px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .tab-badge.ready { background: rgba(58,245,255,0.15); color: var(--plan-color); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* VISUAL DNA */
   .results-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin: 24px 0;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
   }
 
-  .results-actions {
-    display: flex;
-    gap: 10px;
-  }
+  .results-actions { display: flex; gap: 10px; }
 
   .action-btn {
     background: none;
@@ -547,17 +386,11 @@
     transition: all 0.2s;
     text-transform: uppercase;
   }
-
   .action-btn:hover { border-color: var(--lime); color: var(--lime); }
   .action-btn.primary { background: var(--orange); border-color: var(--orange); color: #000; font-weight: 700; }
   .action-btn.primary:hover { opacity: 0.85; }
 
-  /* SHOT CARDS */
-  .shots-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2px;
-  }
+  .shots-grid { display: grid; grid-template-columns: 1fr; gap: 2px; }
 
   .shot-card {
     background: var(--surface);
@@ -582,15 +415,9 @@
     cursor: pointer;
     transition: background 0.2s;
   }
-
   .shot-header:hover { background: #222; }
 
-  .shot-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 3px;
-    color: var(--lime);
-  }
+  .shot-num { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--lime); }
 
   .shot-summary {
     font-size: 11px;
@@ -603,57 +430,24 @@
     white-space: nowrap;
   }
 
-  .shot-toggle {
-    font-size: 18px;
-    color: var(--gray);
-    transition: transform 0.3s;
-  }
-
+  .shot-toggle { font-size: 18px; color: var(--gray); transition: transform 0.3s; }
   .shot-toggle.open { transform: rotate(180deg); }
 
-  .shot-body {
-    display: none;
-    padding: 20px;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
+  .shot-body { display: none; padding: 20px; grid-template-columns: 1fr 1fr; gap: 12px; }
   .shot-body.open { display: grid; }
 
-  .shot-field {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 12px 14px;
-  }
+  .shot-field { background: var(--bg); border: 1px solid var(--border); padding: 12px 14px; }
+  .shot-field.full-width { grid-column: 1 / -1; }
 
-  .shot-field.full-width {
-    grid-column: 1 / -1;
-  }
+  .field-label { font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px; display: block; }
+  .field-value { font-size: 11px; color: var(--text); letter-spacing: 0.5px; line-height: 1.6; }
 
-  .field-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--orange);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .field-value {
-    font-size: 11px;
-    color: var(--text);
-    letter-spacing: 0.5px;
-    line-height: 1.6;
-  }
-
-  /* FINAL PROMPT BOX */
   .prompt-box {
     background: var(--bg);
     border: 1px solid var(--lime);
     padding: 16px;
     margin-top: 12px;
     grid-column: 1 / -1;
-    position: relative;
   }
 
   .prompt-label {
@@ -678,7 +472,6 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-
   .copy-shot-btn:hover { background: var(--lime); color: #000; }
 
   .prompt-text {
@@ -689,28 +482,9 @@
     font-family: 'DM Mono', monospace;
   }
 
-  /* JSON OUTPUT */
-  .json-section {
-    margin-top: 32px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-  }
-
-  .json-header {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .json-title {
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--orange);
-    text-transform: uppercase;
-  }
-
+  .json-section { margin-top: 32px; background: var(--surface); border: 1px solid var(--border); }
+  .json-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .json-title { font-size: 10px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; }
   .json-body {
     padding: 20px;
     background: var(--bg);
@@ -724,20 +498,216 @@
     word-break: break-all;
   }
 
-  /* SCROLLBAR */
+  /* ─── PRODUCTION PLAN ─── */
+  .plan-empty {
+    padding: 60px 40px;
+    text-align: center;
+    border: 1px dashed var(--border);
+    margin-top: 24px;
+  }
+  .plan-empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 4px; color: var(--gray2); margin-bottom: 8px; }
+  .plan-empty-sub { font-size: 10px; color: var(--gray2); letter-spacing: 2px; }
+
+  .plan-generate-btn {
+    width: 100%;
+    background: var(--plan-color);
+    border: none;
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 5px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .plan-generate-btn::before {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.15);
+    transition: left 0.3s;
+  }
+  .plan-generate-btn:hover::before { left: 100%; }
+  .plan-generate-btn:hover { opacity: 0.9; }
+  .plan-generate-btn:disabled { background: var(--gray2); color: var(--gray); cursor: not-allowed; }
+
+  .plan-result { display: none; margin-top: 24px; }
+  .plan-result.show { display: block; }
+
+  /* NARRATIVE */
+  .narrative-section {
+    background: var(--surface);
+    border: 1px solid var(--plan-color);
+    margin-bottom: 24px;
+    animation: fadeIn 0.5s ease forwards;
+  }
+  .narrative-header {
+    padding: 14px 20px;
+    background: rgba(58,245,255,0.05);
+    border-bottom: 1px solid rgba(58,245,255,0.2);
+  }
+  .narrative-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 3px; color: var(--plan-color); }
+  .narrative-body { padding: 20px; }
+
+  .narrative-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .narrative-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+  .narrative-tag { font-size: 9px; letter-spacing: 2px; color: var(--plan-color); text-transform: uppercase; min-width: 120px; padding-top: 2px; }
+  .narrative-text { font-size: 11px; color: var(--text); line-height: 1.7; letter-spacing: 0.5px; }
+
+  /* OVERVIEW */
+  .plan-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+
+  .overview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    text-align: center;
+    animation: fadeIn 0.5s ease forwards;
+  }
+  .overview-value { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 2px; color: var(--plan-color); line-height: 1; margin-bottom: 6px; }
+  .overview-label { font-size: 9px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; }
+
+  /* PLAN SHOT CARDS */
+  .plan-shots { display: flex; flex-direction: column; gap: 12px; }
+
+  .plan-shot-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--plan-color);
+    overflow: hidden;
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+  }
+  .plan-shot-card.needs-two { border-left-color: var(--orange); }
+
+  .plan-shot-header {
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .plan-shot-header:hover { background: #222; }
+
+  .plan-shot-num { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 3px; color: var(--plan-color); }
+  .plan-shot-card.needs-two .plan-shot-num { color: var(--orange); }
+
+  .plan-shot-meta { display: flex; align-items: center; gap: 12px; flex: 1; margin: 0 16px; overflow: hidden; }
+
+  .plan-timecode {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  .plan-img-badge { font-size: 9px; letter-spacing: 1px; padding: 3px 8px; font-weight: 700; white-space: nowrap; }
+  .plan-img-badge.one { background: rgba(200,255,0,0.1); color: var(--lime); border: 1px solid rgba(200,255,0,0.3); }
+  .plan-img-badge.two { background: rgba(255,107,0,0.1); color: var(--orange); border: 1px solid rgba(255,107,0,0.3); }
+
+  .plan-shot-summary { font-size: 10px; color: var(--gray); letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .plan-shot-toggle { font-size: 16px; color: var(--gray); transition: transform 0.3s; flex-shrink: 0; }
+  .plan-shot-toggle.open { transform: rotate(180deg); }
+
+  .plan-shot-body { display: none; padding: 20px; }
+  .plan-shot-body.open { display: block; }
+
+  .plan-scene-desc {
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .plan-reason {
+    font-size: 11px;
+    color: var(--gray);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-left: 2px solid var(--border-bright);
+  }
+
+  .plan-transition {
+    font-size: 11px;
+    color: var(--plan-color);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: rgba(58,245,255,0.04);
+    border-left: 2px solid var(--plan-color);
+  }
+
+  .plan-frames { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+
+  .frame-block { background: var(--bg); border: 1px solid var(--border); padding: 14px 16px; }
+  .frame-block.start-frame { border-color: rgba(200,255,0,0.3); }
+  .frame-block.end-frame { border-color: rgba(255,107,0,0.3); }
+
+  .frame-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .frame-label.start { color: var(--lime); }
+  .frame-label.end { color: var(--orange); }
+
+  .frame-prompt { font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.7; letter-spacing: 0.5px; }
+  .frame-block.start-frame .frame-prompt { color: var(--lime); }
+  .frame-block.end-frame .frame-prompt { color: var(--orange); }
+
+  .copy-frame-btn {
+    background: none;
+    border: 1px solid currentColor;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    opacity: 0.6;
+  }
+  .copy-frame-btn:hover { opacity: 1; }
+
+  .plan-actions { display: flex; gap: 10px; margin-top: 24px; margin-bottom: 24px; }
+
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border-bright); }
-  ::-webkit-scrollbar-thumb:hover { background: var(--gray); }
 
-  /* DIVIDER */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 48px 0;
-  }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
 
-  /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
     padding: 20px 40px;
@@ -749,7 +719,6 @@
     letter-spacing: 2px;
   }
 
-  /* TOAST */
   .toast {
     position: fixed;
     bottom: 32px;
@@ -766,10 +735,8 @@
     transition: transform 0.3s ease;
     pointer-events: none;
   }
-
   .toast.show { transform: translateY(0); }
 
-  /* ERROR STATE */
   .error-box {
     display: none;
     background: rgba(255,51,51,0.08);
@@ -781,46 +748,33 @@
     letter-spacing: 1px;
     line-height: 1.7;
   }
-
   .error-box.show { display: block; }
 
-  /* RESPONSIVE */
   @media (max-width: 768px) {
     header { padding: 0 20px; }
     .main { padding: 32px 20px; }
     .config-panel { grid-template-columns: 1fr; }
     .shot-body { grid-template-columns: 1fr; }
-    .shot-field.full-width { grid-column: 1; }
-    .status-bar { padding: 10px 20px; gap: 12px; overflow-x: auto; }
+    .plan-overview { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="logo">
     VIDEO RE
-    <span class="logo-badge">V.02</span>
+    <span class="logo-badge">V.03</span>
   </div>
   <div class="header-suite">AI CONTENT STUDIO</div>
   <button class="settings-btn" onclick="openModal()">⚙ API KEYS</button>
 </header>
 
-<!-- STATUS BAR -->
 <div class="status-bar">
-  <div>
-    <span class="status-dot" id="geminiDot"></span>
-    GEMINI API
-  </div>
-  <div>
-    <span class="status-dot" id="claudeDot"></span>
-    CLAUDE API
-  </div>
-  
+  <div><span class="status-dot" id="geminiDot"></span>GEMINI API</div>
+  <div><span class="status-dot" id="claudeDot"></span>CLAUDE API</div>
 </div>
 
-<!-- API MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
@@ -843,36 +797,30 @@
   </div>
 </div>
 
-<!-- MAIN -->
 <main class="main">
 
-  <!-- HERO -->
   <div>
     <div class="section-label">// VISUAL DNA EXTRACTOR</div>
     <div class="section-title" style="white-space:nowrap;">REVERSE ENGINEER</div>
     <div class="section-desc">
       레퍼런스 영상을 업로드하면 Shot-by-Shot 물리 설계도를 자동으로 추출합니다.<br>
-      Nano Banana Pro 프레임워크 + Kling 3.0 최적화 프롬프트로 변환.
+      Nano Banana Pro 프레임워크 + Kling 3.0 최적화 프롬프트 + Production Plan 자동 생성.
     </div>
   </div>
 
-  <!-- UPLOAD -->
   <div class="upload-section">
     <div class="section-label">// 01 — VIDEO INPUT</div>
-
     <div class="upload-zone" id="uploadZone"
       onclick="document.getElementById('fileInput').click()"
       ondragover="handleDragOver(event)"
       ondragleave="handleDragLeave(event)"
       ondrop="handleDrop(event)">
-
       <div id="uploadDefault">
         <span class="upload-icon">▶</span>
         <div class="upload-title">DROP VIDEO OR CLICK</div>
         <div class="upload-sub">MP4 / MOV / WEBM / AVI</div>
         <div class="upload-limit">MAX 50MB — GEMINI FILE UPLOAD API</div>
       </div>
-
       <div class="file-selected" id="fileSelected">
         <video class="video-preview" id="videoPreview" controls muted playsinline></video>
         <div class="video-preview-meta">
@@ -884,7 +832,6 @@
     <input type="file" id="fileInput" accept="video/*" onchange="handleFileSelect(event)">
   </div>
 
-  <!-- CONFIG -->
   <div class="config-panel">
     <div class="config-card">
       <div class="config-card-title">// SHOT COUNT</div>
@@ -903,90 +850,114 @@
     </div>
     <div class="config-card" style="grid-column: 1 / -1;">
       <div class="config-card-title">// ANALYSIS INSTRUCTION (OPTIONAL)</div>
-      <textarea class="config-textarea" id="charRef" placeholder="(선택) 분석 방향을 자유롭게 지시하세요.&#10;예: 하단 workflow 파트는 무시하고 메인 영상만 분석해주세요.&#10;예: 카메라 무브먼트 위주로 분석해주세요.&#10;예: 주인공을 platinum blonde buzzcut male로 교체해서 묘사해주세요.&#10;비워두면 영상 전체를 기본 방식으로 분석합니다."></textarea>
+      <textarea class="config-textarea" id="charRef" placeholder="(선택) 분석 방향을 자유롭게 지시하세요.&#10;예: 하단 workflow 파트는 무시하고 메인 영상만 분석해주세요.&#10;예: 카메라 무브먼트 위주로 분석해주세요.&#10;예: 주인공을 platinum blonde buzzcut male로 교체해서 묘사해주세요."></textarea>
     </div>
   </div>
 
-  <!-- ANALYZE BUTTON -->
   <button class="analyze-btn" id="analyzeBtn" onclick="startAnalysis()">
     ⬡ EXTRACT VISUAL DNA
   </button>
 
-  <!-- ERROR -->
   <div class="error-box" id="errorBox"></div>
 
-  <!-- PROGRESS -->
   <div class="progress-section" id="progressSection">
     <div class="section-label">// PROCESSING</div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
     <div class="progress-log" id="progressLog"></div>
   </div>
 
   <!-- RESULTS -->
   <div class="results-section" id="resultsSection">
-    <div class="results-header">
-      <div>
-        <div class="section-label">// EXTRACTED SHOTS</div>
-        <div class="section-title" style="font-size:32px;" id="resultsTitle">— SHOTS</div>
+
+    <div class="output-tabs">
+      <button class="output-tab active" id="tabVisualDNA" onclick="switchTab('visualDNA')">
+        VISUAL DNA
+      </button>
+      <button class="output-tab plan-tab" id="tabPlan" onclick="switchTab('plan')">
+        PRODUCTION PLAN
+        <span class="tab-badge" id="planBadge">CLICK TO GENERATE</span>
+      </button>
+    </div>
+
+    <!-- VISUAL DNA TAB -->
+    <div class="tab-panel active" id="panelVisualDNA">
+      <div class="results-header">
+        <div>
+          <div class="section-label">// EXTRACTED SHOTS</div>
+          <div class="section-title" style="font-size:32px;" id="resultsTitle">— SHOTS</div>
+        </div>
+        <div class="results-actions">
+          <button class="action-btn" onclick="copyAllPrompts()">COPY ALL PROMPTS</button>
+          <button class="action-btn primary" onclick="copyJSON()">COPY JSON</button>
+        </div>
       </div>
-      <div class="results-actions">
-        <button class="action-btn" onclick="copyAllPrompts()">COPY ALL PROMPTS</button>
-        <button class="action-btn primary" onclick="copyJSON()">COPY JSON</button>
+      <div class="shots-grid" id="shotsGrid"></div>
+      <div class="json-section" style="margin-top:24px;">
+        <div class="json-header">
+          <div class="json-title">STORYBOARD GEN COMPATIBLE JSON</div>
+          <button class="action-btn" onclick="copyJSON()" style="padding:8px 14px;">COPY</button>
+        </div>
+        <div class="json-body" id="jsonOutput"></div>
       </div>
     </div>
 
-    <div class="shots-grid" id="shotsGrid"></div>
-
-    <!-- JSON OUTPUT -->
-    <div class="json-section" style="margin-top: 24px;">
-      <div class="json-header">
-        <div class="json-title">STORYBOARD GEN COMPATIBLE JSON</div>
-        <button class="action-btn" onclick="copyJSON()" style="padding: 8px 14px;">COPY</button>
+    <!-- PRODUCTION PLAN TAB -->
+    <div class="tab-panel" id="panelPlan">
+      <div id="planEmptyState">
+        <div class="plan-empty">
+          <div class="plan-empty-title">PRODUCTION PLAN 미생성</div>
+          <div class="plan-empty-sub">아래 버튼을 눌러 I2V 작업 지시서 + 내러티브 분석을 생성하세요</div>
+        </div>
+        <button class="plan-generate-btn" id="planGenerateBtn" onclick="generateProductionPlan()">
+          ◈ GENERATE PRODUCTION PLAN
+        </button>
       </div>
-      <div class="json-body" id="jsonOutput"></div>
+
+      <div class="plan-result" id="planResult">
+        <div class="plan-actions">
+          <button class="action-btn" onclick="copyPlanJSON()">COPY PLAN JSON</button>
+          <button class="action-btn" style="border-color:var(--plan-color);color:var(--plan-color);" onclick="regeneratePlan()">↺ REGENERATE</button>
+        </div>
+        <div class="narrative-section" id="narrativeSection">
+          <div class="narrative-header">
+            <div class="narrative-title">◈ NARRATIVE ANALYSIS</div>
+          </div>
+          <div class="narrative-body" id="narrativeBody"></div>
+        </div>
+        <div class="plan-overview" id="planOverview"></div>
+        <div class="section-label" style="margin-bottom:12px;">// SHOT-BY-SHOT 작업 지시서</div>
+        <div class="plan-shots" id="planShots"></div>
+      </div>
     </div>
+
   </div>
 
 </main>
 
-<hr class="divider" style="margin: 0;">
-
+<hr class="divider" style="margin:0;">
 <footer>
   <div>VIDEO RE — VISUAL DNA EXTRACTOR</div>
   <div>AI CONTENT STUDIO © HEECHAN</div>
 </footer>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ─────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────
 let selectedFile = null;
-let targetModel = 'kling3';
 let analysisResult = null;
+let productionPlanResult = null;
 
-const MODEL_LABELS = {
-  kling3: 'KLING 3.0',
-  kling25: 'KLING 2.5',
-  higgsfield: 'HIGGSFIELD SOUL 2.0',
-  minimax: 'MINIMAX 2.3'
-};
+window.addEventListener('load', () => { loadKeys(); updateStatusDots(); });
 
-// ─────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────
-window.addEventListener('load', () => {
-  loadKeys();
-  updateStatusDots();
-});
+// ── TABS ──
+function switchTab(tab) {
+  document.getElementById('tabVisualDNA').classList.toggle('active', tab === 'visualDNA');
+  document.getElementById('tabPlan').classList.toggle('active', tab === 'plan');
+  document.getElementById('panelVisualDNA').classList.toggle('active', tab === 'visualDNA');
+  document.getElementById('panelPlan').classList.toggle('active', tab === 'plan');
+}
 
-// ─────────────────────────────────────────
-// API KEY MANAGEMENT
-// ─────────────────────────────────────────
+// ── API KEYS ──
 function loadKeys() {
   const gk = localStorage.getItem('VIDEO_RE_GEMINI');
   const ck = localStorage.getItem('VIDEO_RE_CLAUDE');
@@ -1014,82 +985,47 @@ function updateStatusDots() {
   document.getElementById('claudeDot').className = 'status-dot' + (ck ? ' active' : ' warn');
 }
 
-function openModal() {
-  document.getElementById('modalOverlay').classList.add('active');
-}
-
+function openModal() { document.getElementById('modalOverlay').classList.add('active'); }
 function closeModal() {
   const gk = localStorage.getItem('VIDEO_RE_GEMINI');
   const ck = localStorage.getItem('VIDEO_RE_CLAUDE');
-  if (!gk || !ck) { showToast('API KEYS REQUIRED TO USE'); }
+  if (!gk || !ck) showToast('API KEYS REQUIRED TO USE');
   document.getElementById('modalOverlay').classList.remove('active');
 }
-
-document.getElementById('modalOverlay').addEventListener('click', (e) => {
+document.getElementById('modalOverlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
 });
 
-// ─────────────────────────────────────────
-// FILE HANDLING
-// ─────────────────────────────────────────
-function handleFileSelect(e) {
-  const file = e.target.files[0];
-  if (file) setFile(file);
-}
-
-function handleDragOver(e) {
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.add('dragover');
-}
-
-function handleDragLeave(e) {
-  document.getElementById('uploadZone').classList.remove('dragover');
-}
-
+// ── FILE HANDLING ──
+function handleFileSelect(e) { const f = e.target.files[0]; if (f) setFile(f); }
+function handleDragOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('dragover'); }
+function handleDragLeave() { document.getElementById('uploadZone').classList.remove('dragover'); }
 function handleDrop(e) {
   e.preventDefault();
   document.getElementById('uploadZone').classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('video/')) setFile(file);
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('video/')) setFile(f);
   else showToast('VIDEO FILES ONLY');
 }
 
 function setFile(file) {
-  if (file.size > 52428800) {
-    showError('FILE TOO LARGE. MAX 50MB FOR GEMINI API.\n영상을 트리밍하거나 압축 후 다시 시도해주세요.');
-    return;
-  }
+  if (file.size > 52428800) { showError('FILE TOO LARGE. MAX 50MB.'); return; }
   selectedFile = file;
   const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-  // Set video preview
-  const videoEl = document.getElementById('videoPreview');
-  const prevUrl = URL.createObjectURL(file);
-  videoEl.src = prevUrl;
+  document.getElementById('videoPreview').src = URL.createObjectURL(file);
   document.getElementById('uploadDefault').style.display = 'none';
   document.getElementById('fileSelected').classList.add('show');
   document.getElementById('fileName').textContent = file.name;
-  document.getElementById('fileMeta').textContent = `${sizeMB}MB`;
+  document.getElementById('fileMeta').textContent = sizeMB + 'MB';
   document.getElementById('uploadZone').classList.add('has-file');
   document.getElementById('uploadZone').style.padding = '0';
   hideError();
 }
 
-// ─────────────────────────────────────────
-// MODEL SELECTION
-// ─────────────────────────────────────────
-function setModel(btn) {
-  document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  targetModel = btn.dataset.model;
-}
-
-// ─────────────────────────────────────────
-// MAIN ANALYSIS
-// ─────────────────────────────────────────
+// ── MAIN ANALYSIS ──
 async function startAnalysis() {
   const geminiKey = localStorage.getItem('VIDEO_RE_GEMINI');
   const claudeKey = localStorage.getItem('VIDEO_RE_CLAUDE');
-
   if (!geminiKey || !claudeKey) { openModal(); return; }
   if (!selectedFile) { showToast('VIDEO FILE REQUIRED'); return; }
 
@@ -1098,39 +1034,41 @@ async function startAnalysis() {
   btn.textContent = 'PROCESSING...';
   hideError();
 
+  // reset plan
+  productionPlanResult = null;
+  document.getElementById('planBadge').textContent = 'CLICK TO GENERATE';
+  document.getElementById('planBadge').classList.remove('ready');
+  document.getElementById('planEmptyState').style.display = 'block';
+  document.getElementById('planResult').classList.remove('show');
+
   showProgress();
   addLog('▶ INITIATING VISUAL DNA EXTRACTION...', 'processing');
   setProgress(5);
 
   try {
-    // STEP 1: Upload to Gemini Files API
     addLog('▶ UPLOADING VIDEO TO GEMINI FILES API...', 'processing');
     setProgress(15);
     const fileUri = await uploadToGemini(selectedFile, geminiKey);
-    addLog(`✓ VIDEO UPLOADED — WAITING FOR GEMINI PROCESSING...`, 'done');
+    addLog('✓ VIDEO UPLOADED', 'done');
     setProgress(35);
 
-    // STEP 2: Gemini Vision Analysis
-    addLog('▶ GEMINI 3.1 PRO — ANALYZING SHOT STRUCTURE...', 'processing');
+    addLog('▶ GEMINI — ANALYZING SHOT STRUCTURE...', 'processing');
     const shotCount = document.getElementById('shotCount').value;
     const charRef = document.getElementById('charRef').value.trim();
     const rawData = await analyzeWithGemini(fileUri, shotCount, charRef, geminiKey);
     addLog('✓ SHOT ANALYSIS COMPLETE', 'done');
     setProgress(65);
 
-    // STEP 3: Claude Directive Mapping
     addLog('▶ CLAUDE — MAPPING TO NANO BANANA PRO FRAMEWORK...', 'processing');
     const finalData = await mapWithClaude(rawData, charRef, claudeKey);
     addLog('✓ DIRECTIVE MAPPING COMPLETE', 'done');
     setProgress(90);
 
-    // STEP 4: Render results
     addLog('▶ RENDERING OUTPUT...', 'processing');
     analysisResult = finalData;
     renderResults(finalData);
     setProgress(100);
     addLog('✓ VISUAL DNA EXTRACTION COMPLETE', 'done');
-
     showToast('EXTRACTION COMPLETE ✓');
 
   } catch (err) {
@@ -1142,38 +1080,21 @@ async function startAnalysis() {
   }
 }
 
-// ─────────────────────────────────────────
-// GEMINI FILE UPLOAD
-// ─────────────────────────────────────────
+// ── GEMINI UPLOAD ──
 async function uploadToGemini(file, apiKey) {
-  const displayName = file.name;
-
-  // Multipart upload — works in browser (no CORS issues)
-  const metadata = JSON.stringify({ file: { display_name: displayName } });
-  const metadataBlob = new Blob([metadata], { type: 'application/json' });
-
+  const metadata = JSON.stringify({ file: { display_name: file.name } });
   const formData = new FormData();
-  formData.append('metadata', metadataBlob);
-  formData.append('file', file, displayName);
+  formData.append('metadata', new Blob([metadata], { type: 'application/json' }));
+  formData.append('file', file, file.name);
 
-  const uploadRes = await fetch(
+  const res = await fetch(
     `https://generativelanguage.googleapis.com/upload/v1beta/files?uploadType=multipart&key=${apiKey}`,
-    {
-      method: 'POST',
-      body: formData
-    }
+    { method: 'POST', body: formData }
   );
-
-  if (!uploadRes.ok) {
-    const err = await uploadRes.json().catch(() => ({}));
-    throw new Error(`File upload failed: ${err.error?.message || uploadRes.status}`);
-  }
-
-  const uploadData = await uploadRes.json();
-  const fileUri = uploadData?.file?.uri;
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(`Upload failed: ${e.error?.message || res.status}`); }
+  const data = await res.json();
+  const fileUri = data?.file?.uri;
   if (!fileUri) throw new Error('File URI not returned from Gemini');
-
-  // Wait for file to be ACTIVE
   await waitForFileActive(fileUri, apiKey);
   return fileUri;
 }
@@ -1181,11 +1102,8 @@ async function uploadToGemini(file, apiKey) {
 async function waitForFileActive(fileUri, apiKey) {
   const fileId = fileUri.split('/').pop();
   for (let i = 0; i < 40; i++) {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/files/${fileId}?key=${apiKey}`
-    );
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/files/${fileId}?key=${apiKey}`);
     const data = await res.json();
-    // Gemini returns state at data.state (not data.file.state)
     const state = data?.state || data?.file?.state;
     addLog(`▶ FILE STATE: ${state || 'PROCESSING'} (${i+1}/40)`, 'processing');
     if (state === 'ACTIVE') return;
@@ -1195,17 +1113,12 @@ async function waitForFileActive(fileUri, apiKey) {
   throw new Error('File processing timeout');
 }
 
-// ─────────────────────────────────────────
-// GEMINI ANALYSIS
-// ─────────────────────────────────────────
+// ── GEMINI ANALYSIS ──
 async function analyzeWithGemini(fileUri, shotCount, charRef, apiKey) {
   const shotInstruction = shotCount === 'auto'
     ? 'Detect and analyze ALL distinct shots/cuts in this video.'
-    : `Analyze exactly ${shotCount} main shots from this video. If there are more cuts, merge minor movements into the ${shotCount} most distinct shots.`;
-
-  const charInstruction = charRef
-    ? `Additional instruction from user: ${charRef}`
-    : '';
+    : `Analyze exactly ${shotCount} main shots from this video.`;
+  const charInstruction = charRef ? `Additional instruction from user: ${charRef}` : '';
 
   const prompt = `You are a professional cinematographer and film analyst. Analyze this video and extract the physical, technical blueprint of each shot.
 
@@ -1214,28 +1127,16 @@ ${charInstruction}
 
 For EACH shot, extract:
 1. SUBJECT: Who/what is the main subject, appearance, clothing
-2. COMPOSITION: Shot type (ECU/CU/MCU/MS/MLS/LS/ELS), framing, rule of thirds, depth
-3. CAMERA_MOVEMENT: Exact movement type (static/pan/tilt/dolly-in/dolly-out/crane/tracking/handheld/zoom/orbital) and speed (slow/medium/fast)
-4. LIGHTING: Light source, direction, quality (hard/soft), color temperature, mood
-5. ACTION: What the subject is doing, body language, expression
-6. LOCATION: Setting, environment, time of day, background elements
+2. COMPOSITION: Shot type (ECU/CU/MCU/MS/MLS/LS/ELS), framing, depth
+3. CAMERA_MOVEMENT: Exact movement type and speed (static/pan/tilt/dolly-in/dolly-out/crane/tracking/handheld/zoom/orbital)
+4. LIGHTING: Light source, direction, quality, color temperature, mood
+5. ACTION: What the subject is doing
+6. LOCATION: Setting, environment, time of day
 7. DURATION_ESTIMATE: Approximate shot duration in seconds
-8. TRANSITION: How this shot connects to the next (cut/dissolve/fade/smash-cut)
+8. TRANSITION: How this shot connects to the next
 
-Return ONLY a valid JSON array, no markdown, no explanation:
-[
-  {
-    "shot_number": 1,
-    "subject": "...",
-    "composition": "...",
-    "camera_movement": "...",
-    "lighting": "...",
-    "action": "...",
-    "location": "...",
-    "duration_estimate": "...",
-    "transition_out": "..."
-  }
-]`;
+Return ONLY a valid JSON array, no markdown:
+[{"shot_number":1,"subject":"...","composition":"...","camera_movement":"...","lighting":"...","action":"...","location":"...","duration_estimate":"...","transition_out":"..."}]`;
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${apiKey}`,
@@ -1243,91 +1144,48 @@ Return ONLY a valid JSON array, no markdown, no explanation:
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{
-          parts: [
-            { file_data: { mime_type: selectedFile.type || 'video/mp4', file_uri: fileUri } },
-            { text: prompt }
-          ]
-        }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 8000
-        }
+        contents: [{ parts: [
+          { file_data: { mime_type: selectedFile.type || 'video/mp4', file_uri: fileUri } },
+          { text: prompt }
+        ]}],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 8000 }
       })
     }
   );
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(`Gemini analysis failed: ${err.error?.message || res.status}`);
-  }
-
+  if (!res.ok) { const e = await res.json(); throw new Error(`Gemini analysis failed: ${e.error?.message || res.status}`); }
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) throw new Error('No response from Gemini');
 
-  // Parse JSON from response — multi-fallback
-  let cleaned = text
-    .replace(/```json\n?/gi, '')
-    .replace(/```\n?/g, '')
-    .trim();
-
-  // Log snippet for debug
   addLog('▶ PARSING GEMINI RESPONSE...', 'processing');
-
-  // Fallback 1: direct parse
+  const cleaned = text.replace(/```json\n?/gi,'').replace(/```\n?/g,'').trim();
   try { return JSON.parse(cleaned); } catch {}
-
-  // Fallback 2: extract JSON array [...] 
   const arrMatch = cleaned.match(/\[[\s\S]*\]/);
   if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch {} }
-
-  // Fallback 3: extract all objects and wrap in array
   const objMatches = cleaned.match(/\{[\s\S]*?\}(?=\s*,?\s*\{|\s*$)/g);
   if (objMatches) { try { return JSON.parse('[' + objMatches.join(',') + ']'); } catch {} }
-
-  // Debug: log raw text
   addLog('✕ RAW PREVIEW: ' + text.substring(0, 200), 'error');
   throw new Error('Failed to parse Gemini response as JSON');
 }
 
-// ─────────────────────────────────────────
-// CLAUDE DIRECTIVE MAPPING
-// ─────────────────────────────────────────
+// ── CLAUDE MAPPING ──
 async function mapWithClaude(rawShots, charRef, apiKey) {
-  const modelMap = {
-    kling3: 'Kling 3.0',
-    kling25: 'Kling 2.5',
-    higgsfield: 'Higgsfield Soul 2.0',
-    minimax: 'MiniMax 2.3'
-  };
-  const targetModelName = modelMap[targetModel];
-
-  const prompt = `You are an expert AI video prompt engineer for ${targetModelName}. 
+  const prompt = `You are an expert AI video prompt engineer for Kling 3.0.
 You follow the Nano Banana Pro framework: [Subject / Composition / Action / Location / Style].
-
 ${charRef ? `Additional instruction: ${charRef}` : ''}
 
-Convert each shot's raw analysis into an optimized ${targetModelName} prompt.
-
+Convert each shot into an optimized Kling 3.0 prompt.
 Rules:
 - Use cinematic directive language: "slow dolly-in", "locked to subject", "tracking shot"
-- For Kling: Use phrases like "[LOCKED TO: subject]", "shallow DOF", "cinematic push"
-- Keep prompts under 120 words but pack maximum physical information
-- End each prompt with a style tag: "— hyperrealistic cinematic" or "— editorial fashion film"
-- Preserve all physical camera data exactly
+- Use phrases like "[LOCKED TO: subject]", "shallow DOF", "cinematic push"
+- Keep prompts under 120 words
+- End each prompt with "— hyperrealistic cinematic"
 
-Input shots (raw Gemini analysis):
+Input:
 ${JSON.stringify(rawShots, null, 2)}
 
-Return ONLY a valid JSON array with the same structure but add a "kling_prompt" field and "visual_dna" summary to each shot:
-[
-  {
-    ...original_fields,
-    "visual_dna": "one-line summary of this shot's essence",
-    "kling_prompt": "optimized ${targetModelName} prompt here"
-  }
-]`;
+Return ONLY a valid JSON array with added "kling_prompt" and "visual_dna" fields:
+[{...original_fields,"visual_dna":"one-line summary","kling_prompt":"optimized prompt"}]`;
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1337,39 +1195,23 @@ Return ONLY a valid JSON array with the same structure but add a "kling_prompt" 
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
-      messages: [{ role: 'user', content: prompt }]
-    })
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8000, messages: [{ role: 'user', content: prompt }] })
   });
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(`Claude mapping failed: ${err.error?.message || res.status}`);
-  }
-
+  if (!res.ok) { const e = await res.json(); throw new Error(`Claude mapping failed: ${e.error?.message || res.status}`); }
   const data = await res.json();
   const text = data?.content?.[0]?.text;
   if (!text) throw new Error('No response from Claude');
-
-  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    const match = cleaned.match(/\[[\s\S]*\]/);
-    if (match) return JSON.parse(match[0]);
-    throw new Error('Failed to parse Claude response as JSON');
-  }
+  const cleaned = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+  try { return JSON.parse(cleaned); } catch {}
+  const match = cleaned.match(/\[[\s\S]*\]/);
+  if (match) return JSON.parse(match[0]);
+  throw new Error('Failed to parse Claude response as JSON');
 }
 
-// ─────────────────────────────────────────
-// RENDER RESULTS
-// ─────────────────────────────────────────
+// ── RENDER VISUAL DNA ──
 function renderResults(shots) {
   document.getElementById('resultsTitle').textContent = `${shots.length} SHOTS EXTRACTED`;
   document.getElementById('resultsSection').classList.add('show');
-
   const grid = document.getElementById('shotsGrid');
   grid.innerHTML = '';
 
@@ -1377,11 +1219,6 @@ function renderResults(shots) {
     const card = document.createElement('div');
     card.className = 'shot-card';
     card.style.animationDelay = `${i * 0.08}s`;
-
-    const promptFieldLabel = targetModel === 'higgsfield' ? 'HIGGSFIELD PROMPT'
-      : targetModel === 'minimax' ? 'MINIMAX PROMPT'
-      : `KLING ${targetModel === 'kling3' ? '3.0' : '2.5'} PROMPT`;
-
     card.innerHTML = `
       <div class="shot-header" onclick="toggleShot(this)">
         <div class="shot-num">SHOT ${String(shot.shot_number || i+1).padStart(2,'0')}</div>
@@ -1389,149 +1226,279 @@ function renderResults(shots) {
         <div class="shot-toggle">▾</div>
       </div>
       <div class="shot-body">
-        <div class="shot-field">
-          <span class="field-label">SUBJECT</span>
-          <div class="field-value">${shot.subject || '—'}</div>
-        </div>
-        <div class="shot-field">
-          <span class="field-label">COMPOSITION</span>
-          <div class="field-value">${shot.composition || '—'}</div>
-        </div>
-        <div class="shot-field">
-          <span class="field-label">CAMERA MOVEMENT</span>
-          <div class="field-value">${shot.camera_movement || '—'}</div>
-        </div>
-        <div class="shot-field">
-          <span class="field-label">LIGHTING</span>
-          <div class="field-value">${shot.lighting || '—'}</div>
-        </div>
-        <div class="shot-field">
-          <span class="field-label">ACTION</span>
-          <div class="field-value">${shot.action || '—'}</div>
-        </div>
-        <div class="shot-field">
-          <span class="field-label">LOCATION</span>
-          <div class="field-value">${shot.location || '—'}</div>
-        </div>
-        <div class="shot-field">
-          <span class="field-label">DURATION</span>
-          <div class="field-value">${shot.duration_estimate || '—'}</div>
-        </div>
-        <div class="shot-field">
-          <span class="field-label">TRANSITION OUT</span>
-          <div class="field-value">${shot.transition_out || '—'}</div>
-        </div>
+        <div class="shot-field"><span class="field-label">SUBJECT</span><div class="field-value">${shot.subject||'—'}</div></div>
+        <div class="shot-field"><span class="field-label">COMPOSITION</span><div class="field-value">${shot.composition||'—'}</div></div>
+        <div class="shot-field"><span class="field-label">CAMERA MOVEMENT</span><div class="field-value">${shot.camera_movement||'—'}</div></div>
+        <div class="shot-field"><span class="field-label">LIGHTING</span><div class="field-value">${shot.lighting||'—'}</div></div>
+        <div class="shot-field"><span class="field-label">ACTION</span><div class="field-value">${shot.action||'—'}</div></div>
+        <div class="shot-field"><span class="field-label">LOCATION</span><div class="field-value">${shot.location||'—'}</div></div>
+        <div class="shot-field"><span class="field-label">DURATION</span><div class="field-value">${shot.duration_estimate||'—'}</div></div>
+        <div class="shot-field"><span class="field-label">TRANSITION OUT</span><div class="field-value">${shot.transition_out||'—'}</div></div>
         <div class="prompt-box full-width">
-          <div class="prompt-label">
-            ${promptFieldLabel}
-            <button class="copy-shot-btn" onclick="copyShotPrompt(event, ${i})">COPY</button>
-          </div>
-          <div class="prompt-text" id="prompt-${i}">${shot.kling_prompt || '—'}</div>
+          <div class="prompt-label">KLING 3.0 PROMPT<button class="copy-shot-btn" onclick="copyShotPrompt(event,${i})">COPY</button></div>
+          <div class="prompt-text" id="prompt-${i}">${shot.kling_prompt||'—'}</div>
         </div>
-      </div>
-    `;
+      </div>`;
     grid.appendChild(card);
   });
 
-  // JSON Output
   document.getElementById('jsonOutput').textContent = JSON.stringify(shots, null, 2);
-
-  // Scroll to results
-  setTimeout(() => {
-    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 300);
+  setTimeout(() => document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 function toggleShot(header) {
-  const body = header.nextElementSibling;
-  const toggle = header.querySelector('.shot-toggle');
-  body.classList.toggle('open');
-  toggle.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('open');
+  header.querySelector('.shot-toggle').classList.toggle('open');
 }
 
-// ─────────────────────────────────────────
-// COPY FUNCTIONS
-// ─────────────────────────────────────────
-function copyShotPrompt(e, index) {
+// ── PRODUCTION PLAN ──
+async function generateProductionPlan() {
+  if (!analysisResult) { showToast('먼저 EXTRACT VISUAL DNA를 실행해주세요'); return; }
+  const claudeKey = localStorage.getItem('VIDEO_RE_CLAUDE');
+  if (!claudeKey) { openModal(); return; }
+
+  const btn = document.getElementById('planGenerateBtn');
+  btn.disabled = true;
+  btn.textContent = '◈ GENERATING PRODUCTION PLAN...';
+
+  try {
+    const plan = await callClaudeProductionPlan(analysisResult, claudeKey);
+    productionPlanResult = plan;
+    renderProductionPlan(plan);
+    document.getElementById('planBadge').textContent = 'READY';
+    document.getElementById('planBadge').classList.add('ready');
+    showToast('PRODUCTION PLAN GENERATED ✓');
+  } catch (err) {
+    showToast('오류: ' + err.message);
+    btn.disabled = false;
+    btn.textContent = '◈ GENERATE PRODUCTION PLAN';
+  }
+}
+
+async function callClaudeProductionPlan(shots, apiKey) {
+  const prompt = `당신은 AI 영상 제작 전문 감독입니다. 아래 영상 분석 데이터를 바탕으로 상세한 Production Plan을 작성하세요.
+
+분석 데이터:
+${JSON.stringify(shots, null, 2)}
+
+반드시 아래 JSON 형식으로만 응답하세요. JSON 외 다른 텍스트는 포함하지 마세요.
+
+{
+  "narrative_analysis": {
+    "overall_structure": "전체 내러티브 구조 설명 (한국어)",
+    "patterns": [
+      {"tag": "패턴 유형명 (한국어)", "description": "상세 설명 (한국어)"}
+    ],
+    "climax_shot": "클라이맥스 Shot 번호와 이유 (한국어)"
+  },
+  "overview": {
+    "total_shots": 0,
+    "total_images_needed": 0,
+    "estimated_duration": "예상 총 길이"
+  },
+  "shots": [
+    {
+      "shot_number": 1,
+      "timecode": "00:00 ~ 00:02",
+      "duration": "2초",
+      "scene_description": "씬 내용 설명 (한국어)",
+      "transition_note": "컷 전환 방식 및 다음 Shot 연결 (한국어)",
+      "frame_condition": "start_only 또는 start_and_end",
+      "reason": "판단 이유 (한국어)",
+      "start_frame_prompt": "Start Frame T2I 프롬프트 (영어)",
+      "end_frame_prompt": "End Frame T2I 프롬프트 또는 null"
+    }
+  ]
+}
+
+판단 기준:
+- frame_condition = "start_only": Static 카메라, 시작/끝 구도 동일한 경우
+- frame_condition = "start_and_end": 카메라 무브먼트가 크거나(tilt/dolly/crane/orbital), 시작/끝 구도가 완전히 다른 경우
+
+타임코드는 duration_estimate를 누적하여 계산하세요.
+루프 구조, 반복 패턴, 내러티브 아크, 감정 곡선 등을 적극적으로 분석하세요.`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8000, messages: [{ role: 'user', content: prompt }] })
+  });
+  if (!res.ok) { const e = await res.json(); throw new Error(`Production plan failed: ${e.error?.message || res.status}`); }
+  const data = await res.json();
+  const text = data?.content?.[0]?.text;
+  if (!text) throw new Error('No response from Claude');
+  const cleaned = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+  try { return JSON.parse(cleaned); } catch {}
+  const match = cleaned.match(/\{[\s\S]*\}/);
+  if (match) return JSON.parse(match[0]);
+  throw new Error('Failed to parse production plan JSON');
+}
+
+// ── RENDER PRODUCTION PLAN ──
+function renderProductionPlan(plan) {
+  document.getElementById('planEmptyState').style.display = 'none';
+  document.getElementById('planResult').classList.add('show');
+
+  // Narrative
+  const nb = document.getElementById('narrativeBody');
+  nb.innerHTML = '';
+  if (plan.narrative_analysis) {
+    const na = plan.narrative_analysis;
+    if (na.overall_structure) nb.appendChild(makeNarrativeItem('전체 구조', na.overall_structure));
+    if (na.patterns) na.patterns.forEach(p => nb.appendChild(makeNarrativeItem(p.tag, p.description)));
+    if (na.climax_shot) nb.appendChild(makeNarrativeItem('클라이맥스', na.climax_shot));
+  }
+
+  // Overview
+  const ov = document.getElementById('planOverview');
+  ov.innerHTML = '';
+  if (plan.overview) {
+    [
+      { value: plan.overview.total_shots, label: '총 컷 수' },
+      { value: plan.overview.total_images_needed, label: '필요 이미지' },
+      { value: plan.overview.estimated_duration, label: '예상 길이' }
+    ].forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'overview-card';
+      card.innerHTML = `<div class="overview-value">${item.value}</div><div class="overview-label">${item.label}</div>`;
+      ov.appendChild(card);
+    });
+  }
+
+  // Shot cards
+  const ps = document.getElementById('planShots');
+  ps.innerHTML = '';
+  if (plan.shots) {
+    plan.shots.forEach((shot, i) => {
+      const needsTwo = shot.frame_condition === 'start_and_end';
+      const card = document.createElement('div');
+      card.className = `plan-shot-card${needsTwo ? ' needs-two' : ''}`;
+      card.style.animationDelay = `${i * 0.06}s`;
+
+      const startPromptSafe = (shot.start_frame_prompt || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      const endPromptSafe = (shot.end_frame_prompt || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+      const endFrameHTML = needsTwo && shot.end_frame_prompt ? `
+        <div class="frame-block end-frame">
+          <div class="frame-label end">
+            END FRAME
+            <button class="copy-frame-btn" style="color:var(--orange);" onclick="copyTextDirect('${endPromptSafe}')">COPY</button>
+          </div>
+          <div class="frame-prompt">${shot.end_frame_prompt}</div>
+        </div>` : '';
+
+      card.innerHTML = `
+        <div class="plan-shot-header" onclick="togglePlanShot(this)">
+          <div class="plan-shot-num">SHOT ${String(shot.shot_number).padStart(2,'0')}</div>
+          <div class="plan-shot-meta">
+            <span class="plan-timecode">${shot.timecode || '—'}</span>
+            <span class="plan-img-badge ${needsTwo ? 'two' : 'one'}">${needsTwo ? '이미지 2장' : '이미지 1장'}</span>
+            <span class="plan-shot-summary">${(shot.scene_description || '').substring(0,40)}...</span>
+          </div>
+          <div class="plan-shot-toggle">▾</div>
+        </div>
+        <div class="plan-shot-body">
+          <div class="plan-scene-desc">${shot.scene_description || '—'}</div>
+          ${shot.transition_note ? `<div class="plan-transition">⟶ ${shot.transition_note}</div>` : ''}
+          <div class="plan-reason">${shot.reason || '—'}</div>
+          <div class="plan-frames">
+            <div class="frame-block start-frame">
+              <div class="frame-label start">
+                START FRAME
+                <button class="copy-frame-btn" style="color:var(--lime);" onclick="copyTextDirect('${startPromptSafe}')">COPY</button>
+              </div>
+              <div class="frame-prompt">${shot.start_frame_prompt || '—'}</div>
+            </div>
+            ${endFrameHTML}
+          </div>
+        </div>`;
+      ps.appendChild(card);
+    });
+  }
+}
+
+function makeNarrativeItem(tag, text) {
+  const div = document.createElement('div');
+  div.className = 'narrative-item';
+  div.innerHTML = `<div class="narrative-tag">${tag}</div><div class="narrative-text">${text}</div>`;
+  return div;
+}
+
+function togglePlanShot(header) {
+  header.nextElementSibling.classList.toggle('open');
+  header.querySelector('.plan-shot-toggle').classList.toggle('open');
+}
+
+async function regeneratePlan() {
+  document.getElementById('planResult').classList.remove('show');
+  document.getElementById('planEmptyState').style.display = 'block';
+  const btn = document.getElementById('planGenerateBtn');
+  btn.disabled = false;
+  btn.textContent = '◈ GENERATE PRODUCTION PLAN';
+  await generateProductionPlan();
+}
+
+// ── COPY ──
+function copyShotPrompt(e, i) {
   e.stopPropagation();
-  const text = document.getElementById(`prompt-${index}`).textContent;
-  copyToClipboard(text);
+  copyToClipboard(document.getElementById(`prompt-${i}`).textContent);
   showToast('PROMPT COPIED ✓');
 }
-
 function copyAllPrompts() {
   if (!analysisResult) return;
-  const all = analysisResult.map((s, i) =>
-    `// SHOT ${String(i+1).padStart(2,'0')}\n${s.kling_prompt}`
-  ).join('\n\n');
-  copyToClipboard(all);
+  copyToClipboard(analysisResult.map((s,i) => `// SHOT ${String(i+1).padStart(2,'0')}\n${s.kling_prompt}`).join('\n\n'));
   showToast('ALL PROMPTS COPIED ✓');
 }
-
 function copyJSON() {
   if (!analysisResult) return;
   copyToClipboard(JSON.stringify(analysisResult, null, 2));
   showToast('JSON COPIED ✓');
 }
-
+function copyPlanJSON() {
+  if (!productionPlanResult) return;
+  copyToClipboard(JSON.stringify(productionPlanResult, null, 2));
+  showToast('PLAN JSON COPIED ✓');
+}
+function copyTextDirect(text) {
+  copyToClipboard(text);
+  showToast('COPIED ✓');
+}
 function copyToClipboard(text) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text);
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  }
+  if (navigator.clipboard) navigator.clipboard.writeText(text);
+  else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
 }
 
-// ─────────────────────────────────────────
-// PROGRESS
-// ─────────────────────────────────────────
+// ── PROGRESS ──
 function showProgress() {
   document.getElementById('progressSection').classList.add('show');
   document.getElementById('progressLog').innerHTML = '';
   setProgress(0);
 }
-
-function setProgress(pct) {
-  document.getElementById('progressBar').style.width = pct + '%';
-}
-
-function addLog(msg, type = 'done') {
+function setProgress(pct) { document.getElementById('progressBar').style.width = pct + '%'; }
+function addLog(msg, type='done') {
   const log = document.getElementById('progressLog');
   const line = document.createElement('div');
   line.className = `log-line ${type === 'processing' ? 'processing' : ''}`;
-  line.innerHTML = `<span class="log-icon">${type === 'error' ? '✕' : type === 'processing' ? '◎' : '✓'}</span>${msg}`;
+  line.innerHTML = `<span class="log-icon">${type==='error'?'✕':type==='processing'?'◎':'✓'}</span>${msg}`;
   log.appendChild(line);
   log.scrollTop = log.scrollHeight;
 }
 
-// ─────────────────────────────────────────
-// UI HELPERS
-// ─────────────────────────────────────────
+// ── UTILS ──
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
-
-function showError(msg) {
-  const box = document.getElementById('errorBox');
-  box.textContent = msg;
-  box.classList.add('show');
-}
-
-function hideError() {
-  document.getElementById('errorBox').classList.remove('show');
-}
-
-function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
+function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('show'); }
+function hideError() { document.getElementById('errorBox').classList.remove('show'); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 </script>
 </body>
 </html>
