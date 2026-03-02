@@ -1113,60 +1113,79 @@ async function waitForFileActive(fileUri, apiKey) {
   throw new Error('File processing timeout');
 }
 
-// ── GEMINI ANALYSIS ──
+// ── GEMINI ANALYSIS (with retry) ──
 async function analyzeWithGemini(fileUri, shotCount, charRef, apiKey) {
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 15000;
+
   const shotInstruction = shotCount === 'auto'
     ? 'Detect and analyze ALL distinct shots/cuts in this video.'
     : `Analyze exactly ${shotCount} main shots from this video.`;
   const charInstruction = charRef ? `Additional instruction from user: ${charRef}` : '';
 
-  const prompt = `You are a professional cinematographer and film analyst. Analyze this video and extract the physical, technical blueprint of each shot.
+  const prompt = `You are a professional cinematographer and film analyst. Analyze this video and extract the physical, technical blueprint of each shot.\n\n${shotInstruction}\n${charInstruction}\n\nFor EACH shot, extract:\n1. SUBJECT: Who/what is the main subject, appearance, clothing\n2. COMPOSITION: Shot type (ECU/CU/MCU/MS/MLS/LS/ELS), framing, depth\n3. CAMERA_MOVEMENT: Exact movement type and speed (static/pan/tilt/dolly-in/dolly-out/crane/tracking/handheld/zoom/orbital)\n4. LIGHTING: Light source, direction, quality, color temperature, mood\n5. ACTION: What the subject is doing\n6. LOCATION: Setting, environment, time of day\n7. DURATION_ESTIMATE: Approximate shot duration in seconds\n8. TRANSITION: How this shot connects to the next\n\nReturn ONLY a valid JSON array, no markdown:\n[{"shot_number":1,"subject":"...","composition":"...","camera_movement":"...","lighting":"...","action":"...","location":"...","duration_estimate":"...","transition_out":"..."}]`;
 
-${shotInstruction}
-${charInstruction}
+  const requestBody = JSON.stringify({
+    contents: [{ parts: [
+      { file_data: { mime_type: selectedFile.type || 'video/mp4', file_uri: fileUri } },
+      { text: prompt }
+    ]}],
+    generationConfig: { temperature: 0.2, maxOutputTokens: 8000 }
+  });
 
-For EACH shot, extract:
-1. SUBJECT: Who/what is the main subject, appearance, clothing
-2. COMPOSITION: Shot type (ECU/CU/MCU/MS/MLS/LS/ELS), framing, depth
-3. CAMERA_MOVEMENT: Exact movement type and speed (static/pan/tilt/dolly-in/dolly-out/crane/tracking/handheld/zoom/orbital)
-4. LIGHTING: Light source, direction, quality, color temperature, mood
-5. ACTION: What the subject is doing
-6. LOCATION: Setting, environment, time of day
-7. DURATION_ESTIMATE: Approximate shot duration in seconds
-8. TRANSITION: How this shot connects to the next
-
-Return ONLY a valid JSON array, no markdown:
-[{"shot_number":1,"subject":"...","composition":"...","camera_movement":"...","lighting":"...","action":"...","location":"...","duration_estimate":"...","transition_out":"..."}]`;
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [
-          { file_data: { mime_type: selectedFile.type || 'video/mp4', file_uri: fileUri } },
-          { text: prompt }
-        ]}],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 8000 }
-      })
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    if (attempt > 1) {
+      addLog(`▶ GEMINI — RETRYING... (${attempt}/${MAX_RETRIES}) — WAITING 15s`, 'processing');
+      await sleep(RETRY_DELAY);
+      addLog(`▶ GEMINI — ANALYZING SHOT STRUCTURE... (ATTEMPT ${attempt}/${MAX_RETRIES})`, 'processing');
     }
-  );
-  if (!res.ok) { const e = await res.json(); throw new Error(`Gemini analysis failed: ${e.error?.message || res.status}`); }
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('No response from Gemini');
 
-  addLog('▶ PARSING GEMINI RESPONSE...', 'processing');
-  const cleaned = text.replace(/```json\n?/gi,'').replace(/```\n?/g,'').trim();
-  try { return JSON.parse(cleaned); } catch {}
-  const arrMatch = cleaned.match(/\[[\s\S]*\]/);
-  if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch {} }
-  const objMatches = cleaned.match(/\{[\s\S]*?\}(?=\s*,?\s*\{|\s*$)/g);
-  if (objMatches) { try { return JSON.parse('[' + objMatches.join(',') + ']'); } catch {} }
-  addLog('✕ RAW PREVIEW: ' + text.substring(0, 200), 'error');
-  throw new Error('Failed to parse Gemini response as JSON');
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestBody }
+      );
+
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        const msg = e.error?.message || res.status;
+        if ((res.status === 503 || res.status === 429) && attempt < MAX_RETRIES) {
+          addLog(`✕ GEMINI — HIGH DEMAND (${res.status}). RETRYING IN 15s...`, 'error');
+          lastError = new Error(`Gemini analysis failed: ${msg}`);
+          continue;
+        }
+        throw new Error(`Gemini analysis failed: ${msg}`);
+      }
+
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error('No response from Gemini');
+
+      addLog('▶ PARSING GEMINI RESPONSE...', 'processing');
+      const cleaned = text.replace(/```json\n?/gi,'').replace(/```\n?/g,'').trim();
+      try { return JSON.parse(cleaned); } catch {}
+      const arrMatch = cleaned.match(/\[[\s\S]*\]/);
+      if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch {} }
+      const objMatches = cleaned.match(/\{[\s\S]*?\}(?=\s*,?\s*\{|\s*$)/g);
+      if (objMatches) { try { return JSON.parse('[' + objMatches.join(',') + ']'); } catch {} }
+      addLog('✕ RAW PREVIEW: ' + text.substring(0, 200), 'error');
+      throw new Error('Failed to parse Gemini response as JSON');
+
+    } catch (err) {
+      lastError = err;
+      if (attempt < MAX_RETRIES && (err.message.includes('503') || err.message.includes('429') || err.message.includes('high demand') || err.message.includes('High demand') || err.message.includes('currently experiencing'))) {
+        addLog(`✕ GEMINI — ${err.message.substring(0, 80)}. RETRYING IN 15s...`, 'error');
+        await sleep(RETRY_DELAY);
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  throw lastError || new Error('Gemini analysis failed after 3 attempts');
 }
+
 
 // ── CLAUDE MAPPING ──
 async function mapWithClaude(rawShots, charRef, apiKey) {
