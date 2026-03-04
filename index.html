@@ -1130,7 +1130,7 @@ async function analyzeWithGemini(fileUri, shotCount, charRef, apiKey) {
       { file_data: { mime_type: selectedFile.type || 'video/mp4', file_uri: fileUri } },
       { text: prompt }
     ]}],
-    generationConfig: { temperature: 0.2, maxOutputTokens: 8000 }
+    generationConfig: { temperature: 0.2, maxOutputTokens: 16000 }
   });
 
   let lastError;
@@ -1214,7 +1214,7 @@ Return ONLY a valid JSON array with added "kling_prompt" and "visual_dna" fields
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8000, messages: [{ role: 'user', content: prompt }] })
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 16000, messages: [{ role: 'user', content: prompt }] })
   });
   if (!res.ok) { const e = await res.json(); throw new Error(`Claude mapping failed: ${e.error?.message || res.status}`); }
   const data = await res.json();
@@ -1222,8 +1222,10 @@ Return ONLY a valid JSON array with added "kling_prompt" and "visual_dna" fields
   if (!text) throw new Error('No response from Claude');
   const cleaned = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
   try { return JSON.parse(cleaned); } catch {}
-  const match = cleaned.match(/\[[\s\S]*\]/);
-  if (match) return JSON.parse(match[0]);
+  const arrMatch = cleaned.match(/\[[\s\S]*\]/);
+  if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch {} }
+  const objMatches = cleaned.match(/\{[\s\S]*?\}(?=\s*,?\s*\{|\s*\]|\s*$)/g);
+  if (objMatches) { try { return JSON.parse('[' + objMatches.join(',') + ']'); } catch {} }
   throw new Error('Failed to parse Claude response as JSON');
 }
 
@@ -1345,7 +1347,7 @@ ${JSON.stringify(shots, null, 2)}
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8000, messages: [{ role: 'user', content: prompt }] })
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 16000, messages: [{ role: 'user', content: prompt }] })
   });
   if (!res.ok) { const e = await res.json(); throw new Error(`Production plan failed: ${e.error?.message || res.status}`); }
   const data = await res.json();
@@ -1353,8 +1355,10 @@ ${JSON.stringify(shots, null, 2)}
   if (!text) throw new Error('No response from Claude');
   const cleaned = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
   try { return JSON.parse(cleaned); } catch {}
-  const match = cleaned.match(/\{[\s\S]*\}/);
-  if (match) return JSON.parse(match[0]);
+  const objMatch = cleaned.match(/\{[\s\S]*\}/);
+  if (objMatch) { try { return JSON.parse(objMatch[0]); } catch {} }
+  const arrMatch = cleaned.match(/\[[\s\S]*\]/);
+  if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch {} }
   throw new Error('Failed to parse production plan JSON');
 }
 
